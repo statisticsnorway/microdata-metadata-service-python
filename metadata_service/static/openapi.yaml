@@ -1,0 +1,354 @@
+info:
+  title: Metadata service HTTP API
+  version: 0.0.1
+openapi: 3.0.2
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+paths:
+  /languages:
+    get:
+      summary: Gets all available languages.
+      description: Returns an array of Language objects indicating what languages are supported by the Data Store.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+          headers:
+            "X-Request-ID":
+              schema:
+                type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: X-Request-ID
+          in: header
+          schema:
+            type: string
+        - name: version
+          in: query
+          description: Data Store version to use.
+          required: true
+          schema:
+            type: string
+
+  /metadata/data-store:
+    get:
+      summary: Gets information about the data store and available versions.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+          headers:
+            "Content-Language":
+              schema:
+                type: string
+            "X-Request-ID":
+              schema:
+                type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+        - name: X-Request-ID
+          in: header
+          schema:
+            type: string
+
+  /metadata/data-structures:
+    get:
+      summary: Gets an array of DataStructure objects.
+      description: If the names property is used, data structures matching those names are returnes. Otherwise all the data structures are returned.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+          headers:
+            "Content-Language":
+              schema:
+                type: string
+            "X-Request-ID":
+              schema:
+                type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+        - name: X-Request-ID
+          in: header
+          schema:
+            type: string
+        - name: names
+          in: query
+          description: Data structures to retrieve.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            uniqueItems: true
+        - name: version
+          in: query
+          description: Data Store version to use.
+          required: true
+          schema:
+            type: string
+
+  /metadata/data-structures/status:
+    get:
+      summary: Gets current status of given DataStructure.
+      description: Searches newest Data Store versions first.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+          headers:
+            "Content-Language":
+              schema:
+                type: string
+            "X-Request-ID":
+              schema:
+                type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+        - name: X-Request-ID
+          in: header
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: Data structure name.
+          required: true
+          schema:
+            type: string
+
+  /metadata/all:
+    get:
+      summary: Gets all metadata
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+          headers:
+            "Content-Language":
+              schema:
+                type: string
+            "X-Request-ID":
+              schema:
+                type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+        - name: X-Request-ID
+          in: header
+          schema:
+            type: string
+        - name: version
+          in: query
+          description: Data Store version to use.
+          required: true
+          schema:
+            type: string
+
+  /health/alive:
+    get:
+      summary: Liveness probe
+      description: To check if application is alive
+      responses:
+        '200':
+          description: successful operation
+          content:
+            text/html:
+              schema:
+                type: string
+          headers:
+            "X-Request-ID":
+              schema:
+                type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+        - name: X-Request-ID
+          in: header
+          schema:
+            type: string
+
+  /health/ready:
+    get:
+      summary: Readiness probe
+      description: To check if application is ready to accept traffic
+      responses:
+        '200':
+          description: successful operation
+          content:
+            text/html:
+              schema:
+                type: string
+          headers:
+            "X-Request-ID":
+              schema:
+                type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+        - name: X-Request-ID
+          in: header
+          schema:
+            type: string
