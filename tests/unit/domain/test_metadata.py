@@ -64,6 +64,21 @@ def test_find_two_data_structures_without_attrs(mocker):
     assert 'attributeVariables' not in pets
 
 
+def test_find_data_structures_no_name_filter(mocker):
+    with open(METADATA_ALL_FILE_PATH) as f:
+        mocked_metadata_all = json.load(f)
+    mocker.patch.object(
+        datastore, 'get_metadata_all',
+        return_value=mocked_metadata_all
+    )
+    actual = metadata.find_data_structures(
+        [],
+        '1_0_0_0',
+        True
+    )
+    assert len(actual) == 2
+
+
 def test_find_current_data_structure_status_released(mocker):
     with open(DATASTORE_VERSIONS_FILE_PATH) as f:
         mocked_datastore_versions = json.load(f)

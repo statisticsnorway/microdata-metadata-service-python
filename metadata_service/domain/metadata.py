@@ -33,7 +33,11 @@ def find_current_data_structure_status(datastructure_name: str):
 
 def find_data_structures(names: List[str], version: str, include_attributes: bool):
     metadata_all = datastore.get_metadata_all(version)
-    matched = [ds for ds in metadata_all['dataStructures'] if ds['name'] in names]
+    if names:
+        matched = [ds for ds in metadata_all['dataStructures'] if ds['name'] in names]
+    else:
+        matched = metadata_all['dataStructures']
+
     for match in matched:
         if not include_attributes:
             match.pop('attributeVariables', None)
