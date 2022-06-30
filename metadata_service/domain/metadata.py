@@ -5,11 +5,11 @@ from metadata_service.exceptions.exceptions import DataNotFoundException
 
 
 def find_all_datastore_versions():
-    pending_operations = datastore.get_pending_operations()
+    draft_version = datastore.get_draft_version()
     datastore_versions = datastore.get_datastore_versions()
 
-    if len(pending_operations) > 0:
-        datastore_versions['versions'].insert(0, pending_operations)
+    if draft_version:
+        datastore_versions['versions'].insert(0, draft_version)
 
     return datastore_versions
 
