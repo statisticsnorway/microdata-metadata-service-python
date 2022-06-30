@@ -3,6 +3,8 @@ from typing import List
 
 from pydantic import BaseModel, Extra, validator
 
+from metadata_service.exceptions.exceptions import RequestValidationException
+
 SEMVER_4_PARTS_REG_EXP = re.compile(r"^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$")
 
 
@@ -18,22 +20,15 @@ class MetadataQuery(BaseModel, extra=Extra.forbid, validate_assignment=True):
         elif isinstance(v, str):
             return v.split(',')
         else:
-            raise ValueError('names field must be a list or a string')
+            raise RequestValidationException('names field must be a list or a string')
 
     @validator('version', pre=True)
     def to_file_version(cls, v: str):
         if not SEMVER_4_PARTS_REG_EXP.match(v):
-            msg = f'Version is in incorrect format: {v}. '
-            'Should consist of 4 parts, e.g. 1.0.0.0".'
-            raise ValueError(
-                msg,
-                {
-                    "type": "REQUEST_VALIDATION_ERROR",
-                    "code": 106,
-                    "service": "data-store",
-                    "version": v,
-                    "message": msg
-                })
+            raise RequestValidationException(
+                f'Version is in incorrect format: {v}. '
+                'Should consist of 4 parts, e.g. 1.0.0.0".'
+            )
         dot_count = v.count('.')
         if v.startswith('0.0.0') and dot_count == 3:
             return 'DRAFT'

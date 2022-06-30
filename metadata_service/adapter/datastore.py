@@ -1,6 +1,8 @@
 import json
 import os
 
+from metadata_service.exceptions.exceptions import DataNotFoundException
+
 
 def get_draft_version() -> dict:
     json_file = (
@@ -23,5 +25,8 @@ def get_metadata_all(version: str) -> str:
         f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/'
         f'metadata_all__{version}.json'
     )
-    with open(metadata_all_file_path, 'r') as f:
-        return json.load(f)
+    try:
+        with open(metadata_all_file_path, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        raise DataNotFoundException(f'metadata_all for version {version} not found')

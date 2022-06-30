@@ -4,6 +4,7 @@ import uuid
 import json_logging
 import msgpack
 from flask import Flask, Response, request, jsonify, make_response
+from werkzeug.exceptions import NotFound
 
 from metadata_service.api.metadata_api import metadata_api
 from metadata_service.api.observability import observability
@@ -11,7 +12,7 @@ from metadata_service.api.openapi_docs import openapi_docs
 from metadata_service.config.logging import (
     CustomJSONLog, CustomJSONRequestLogFormatter
 )
-from metadata_service.exceptions.exceptions import DataNotFoundException
+from metadata_service.exceptions.exceptions import DataNotFoundException, RequestValidationException
 
 
 def init_json_logging():
@@ -55,12 +56,35 @@ def after_request(response: Response):
 @app.errorhandler(Exception)
 def handle_generic_exception(exc):
     logger.exception(exc)
-    return jsonify({"message": f"Error: {str(exc)}"}), 500
+    return jsonify({
+        'code': 202,
+        "message": f"Error: {str(exc)}",
+        'service': 'metadata-service',
+        'type': 'SYSTEM_ERROR',
+    }), 500
+
+
+@app.errorhandler(NotFound)
+def handle_url_invalid(exc):
+    logger.exception(exc)
+    return jsonify({
+        'code': 103,
+        "message": f"Error: {str(exc)}",
+        'service': 'metadata-service',
+        'type': 'PATH_NOT_FOUND',
+    }), 400
 
 
 @app.errorhandler(DataNotFoundException)
-def handle_data_not_found(e):
-    return jsonify(e.to_dict()), 404
+def handle_data_not_found(exc):
+    logger.exception(exc)
+    return jsonify(exc.to_dict()), 404
+
+
+@app.errorhandler(RequestValidationException)
+def handle_data_not_found(exc):
+    logger.exception(exc)
+    return jsonify(exc.to_dict()), 400
 
 
 # this is needed to run the application in IDE

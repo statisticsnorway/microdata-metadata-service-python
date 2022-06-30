@@ -28,7 +28,7 @@ def find_current_data_structure_status(datastructure_name: str):
                 'releaseStatus': "DRAFT" if version['version'].startswith('0.0.0.') else 'RELEASED'
             }
 
-    raise DataNotFoundException(datastructure_name)
+    raise DataNotFoundException(f"No data structure named {datastructure_name} was found")
 
 
 def find_data_structures(names: List[str], version: str, include_attributes: bool):
