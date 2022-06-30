@@ -2,11 +2,11 @@ import json
 import os
 
 
-def get_pending_operations() -> dict:
-    pending_operations_json = (
-        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/pending_operations.json'
+def get_draft_version() -> dict:
+    json_file = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/draft_version.json'
     )
-    with open(pending_operations_json, encoding="utf-8") as f:
+    with open(json_file, encoding="utf-8") as f:
         return json.load(f)
 
 

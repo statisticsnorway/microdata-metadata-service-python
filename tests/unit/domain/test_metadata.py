@@ -9,8 +9,8 @@ METADATA_ALL_FILE_PATH = (
 DATASTORE_VERSIONS_FILE_PATH = (
     'tests/resources/fixtures/domain/datastore_versions.json'
 )
-PENDING_OPERATIONS_FILE_PATH = (
-    'tests/resources/fixtures/domain/pending_operations.json'
+DRAFT_VERSION_FILE_PATH = (
+    'tests/resources/fixtures/domain/draft_version.json'
 )
 
 
@@ -82,15 +82,15 @@ def test_find_data_structures_no_name_filter(mocker):
 def test_find_current_data_structure_status_released(mocker):
     with open(DATASTORE_VERSIONS_FILE_PATH) as f:
         mocked_datastore_versions = json.load(f)
-    with open(PENDING_OPERATIONS_FILE_PATH) as f:
-        mocked_pending_operations = json.load(f)
+    with open(DRAFT_VERSION_FILE_PATH) as f:
+        mocked_draft_version = json.load(f)
     mocker.patch.object(
         datastore, 'get_datastore_versions',
         return_value=mocked_datastore_versions
     )
     mocker.patch.object(
-        datastore, 'get_pending_operations',
-        return_value=mocked_pending_operations
+        datastore, 'get_draft_version',
+        return_value=mocked_draft_version
     )
     actual = metadata.find_current_data_structure_status(
         'TEST_PERSON_INCOME'
@@ -106,15 +106,15 @@ def test_find_current_data_structure_status_released(mocker):
 def test_find_current_data_structure_status_draft(mocker):
     with open(DATASTORE_VERSIONS_FILE_PATH) as f:
         mocked_datastore_versions = json.load(f)
-    with open(PENDING_OPERATIONS_FILE_PATH) as f:
-        mocked_pending_operations = json.load(f)
+    with open(DRAFT_VERSION_FILE_PATH) as f:
+        mocked_draft_version = json.load(f)
     mocker.patch.object(
         datastore, 'get_datastore_versions',
         return_value=mocked_datastore_versions
     )
     mocker.patch.object(
-        datastore, 'get_pending_operations',
-        return_value=mocked_pending_operations
+        datastore, 'get_draft_version',
+        return_value=mocked_draft_version
     )
     actual = metadata.find_current_data_structure_status(
         'TEST_PERSON_HOBBIES'
@@ -130,15 +130,15 @@ def test_find_current_data_structure_status_draft(mocker):
 def test_find_all_datastore_versions(mocker):
     with open(DATASTORE_VERSIONS_FILE_PATH) as f:
         mocked_datastore_versions = json.load(f)
-    with open(PENDING_OPERATIONS_FILE_PATH) as f:
-        mocked_pending_operations = json.load(f)
+    with open(DRAFT_VERSION_FILE_PATH) as f:
+        mocked_draft_version = json.load(f)
     mocker.patch.object(
         datastore, 'get_datastore_versions',
         return_value=mocked_datastore_versions
     )
     mocker.patch.object(
-        datastore, 'get_pending_operations',
-        return_value=mocked_pending_operations
+        datastore, 'get_draft_version',
+        return_value=mocked_draft_version
     )
     actual = metadata.find_all_datastore_versions()
     assert len(actual['versions']) == 2
@@ -146,7 +146,7 @@ def test_find_all_datastore_versions(mocker):
     assert actual['versions'][1]['version'] == '1.0.0.0'
 
 
-def test_find_all_datastore_versions_when_pending_operations_empty(mocker):
+def test_find_all_datastore_versions_when_draft_version_empty(mocker):
     with open(DATASTORE_VERSIONS_FILE_PATH) as f:
         mocked_datastore_versions = json.load(f)
     mocker.patch.object(
@@ -154,7 +154,7 @@ def test_find_all_datastore_versions_when_pending_operations_empty(mocker):
         return_value=mocked_datastore_versions
     )
     mocker.patch.object(
-        datastore, 'get_pending_operations',
+        datastore, 'get_draft_version',
         return_value={}
     )
     actual = metadata.find_all_datastore_versions()
