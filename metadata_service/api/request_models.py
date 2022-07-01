@@ -27,7 +27,7 @@ class MetadataQuery(BaseModel, extra=Extra.forbid, validate_assignment=True):
         if not SEMVER_4_PARTS_REG_EXP.match(v):
             raise RequestValidationException(
                 f'Version is in incorrect format: {v}. '
-                'Should consist of 4 parts, e.g. 1.0.0.0".'
+                'Should consist of 4 parts, e.g. 1.0.0.0.'
             )
         dot_count = v.count('.')
         if v.startswith('0.0.0') and dot_count == 3:
