@@ -49,3 +49,9 @@ docker run --publish 8080:8080 \
 --env DATASTORE_ROOT_DIR=/datastore \
 -v /path/to/datastore:/datastore metadata-service:local-latest
 ````
+
+## Built with
+* [Poetry](https://python-poetry.org/) - Python dependency and package management
+* [Gunicorn](https://gunicorn.org/) - Python WSGI-server for UNIX
+* [Flask](https://flask.palletsprojects.com) - Web framework
+* [Pydantic]
