@@ -54,4 +54,4 @@ docker run --publish 8080:8080 \
 * [Poetry](https://python-poetry.org/) - Python dependency and package management
 * [Gunicorn](https://gunicorn.org/) - Python WSGI-server for UNIX
 * [Flask](https://flask.palletsprojects.com) - Web framework
-* [Pydantic]
+* [Pydantic](https://pydantic-docs.helpmanual.io/) - Data validation
