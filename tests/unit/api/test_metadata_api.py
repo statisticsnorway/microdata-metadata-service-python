@@ -79,7 +79,10 @@ def test_get_current_data_structure_status(flask_app, mocker):
         return_value=MOCKED_DATASTRUCTURE
     )
     response: Response = flask_app.get(
-        url_for('metadata_api.get_data_structure_current_status', name='INNTEKT_TJENPEN'),
+        url_for(
+            'metadata_api.get_data_structure_current_status',
+            name='INNTEKT_TJENPEN'
+        ),
         headers={
             'X-Request-ID': 'test-123',
             'Accept-Language': 'no',
@@ -93,7 +96,7 @@ def test_get_current_data_structure_status(flask_app, mocker):
 
 
 def test_get_data_structures(flask_app, mocker):
-    with open(DATA_STRUCTURES_FILE_PATH) as f:
+    with open(DATA_STRUCTURES_FILE_PATH, encoding='utf-8') as f:
         mocked_data_structures = json.load(f)
 
     spy = mocker.patch.object(
@@ -120,7 +123,7 @@ def test_get_data_structures(flask_app, mocker):
 
 
 def test_get_data_structures_with_messagepack(flask_app, mocker):
-    with open(DATA_STRUCTURES_FILE_PATH) as f:
+    with open(DATA_STRUCTURES_FILE_PATH, encoding='utf-8') as f:
         mocked_data_structures = json.load(f)
 
     spy = mocker.patch.object(
@@ -147,7 +150,7 @@ def test_get_data_structures_with_messagepack(flask_app, mocker):
 
 
 def test_get_all_metadata(flask_app, mocker):
-    with open(DATA_STRUCTURES_FILE_PATH) as f:
+    with open(DATA_STRUCTURES_FILE_PATH, encoding='utf-8') as f:
         mocked_data_structures = json.load(f)
     mocked_metadata_all = {
         "dataStore": {

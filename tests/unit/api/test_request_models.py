@@ -71,4 +71,7 @@ def test_metadata_query_invalid_names():
             names={'a'},
             version='1.0.0.0'
         )
-    assert 'names field must be a list or a string' in e.value.message['message']
+    assert (
+        'names field must be a list or a string'
+        in e.value.message['message']
+    )
