@@ -115,7 +115,7 @@ def test_get_data_structures(flask_app, mocker):
         })
     spy.assert_called_with(
         ['FNR', 'AKT_ARBAP'],
-        '3_2_1_0',
+        '3_2_1',
         True
     )
     assert response.headers['Content-Type'] == 'application/json'
@@ -142,7 +142,7 @@ def test_get_data_structures_with_messagepack(flask_app, mocker):
         })
     spy.assert_called_with(
         ['FNR', 'AKT_ARBAP'],
-        '3_2_1_0',
+        '3_2_1',
         True
     )
     assert response.headers['Content-Type'] == 'application/x-msgpack'
@@ -177,7 +177,7 @@ def test_get_all_metadata(flask_app, mocker):
             'Accept': 'application/json'
         })
     spy.assert_called_with(
-        '3_2_1_0'
+        '3_2_1'
     )
     assert response.headers['Content-Type'] == 'application/json'
     assert response.json == mocked_metadata_all

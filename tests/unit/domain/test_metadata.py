@@ -23,7 +23,7 @@ def test_find_two_data_structures_with_attrs(mocker):
     )
     actual = metadata.find_data_structures(
         ['TEST_PERSON_INCOME', 'TEST_PERSON_PETS'],
-        '1_0_0_0',
+        '1_0_0',
         True
     )
     assert len(actual) == 2
@@ -50,7 +50,7 @@ def test_find_two_data_structures_without_attrs(mocker):
     )
     actual = metadata.find_data_structures(
         ['TEST_PERSON_INCOME', 'TEST_PERSON_PETS'],
-        '1_0_0_0',
+        '1_0_0',
         False
     )
     assert len(actual) == 2
@@ -77,7 +77,7 @@ def test_find_data_structures_no_name_filter(mocker):
     )
     actual = metadata.find_data_structures(
         [],
-        '1_0_0_0',
+        '1_0_0',
         True
     )
     assert len(actual) == 2
