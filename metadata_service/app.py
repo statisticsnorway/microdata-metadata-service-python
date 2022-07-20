@@ -82,7 +82,7 @@ def handle_data_not_found(exc):
 
 
 @app.errorhandler(RequestValidationException)
-def handle_data_not_found(exc):
+def handle_invalid_request(exc):
     logger.exception(exc)
     return jsonify(exc.to_dict()), 400
 
