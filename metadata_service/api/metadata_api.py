@@ -13,7 +13,7 @@ metadata_api = Blueprint('metadata_api', __name__)
 @metadata_api.route('/metadata/data-store', methods=['GET'])
 @validate()
 def get_data_store():
-    logger.info(f'GET /metadata/data-store')
+    logger.info('GET /metadata/data-store')
 
     response = jsonify(metadata.find_all_datastore_versions())
     response.headers.set('content-language', 'no')
@@ -23,8 +23,9 @@ def get_data_store():
 @metadata_api.route('/metadata/data-structures/status', methods=['GET'])
 @validate()
 def get_data_structure_current_status(query: NameParam):
-    logger.info(f'GET /metadata/data-structures/status with name = {query.name}')
-
+    logger.info(
+        f'GET /metadata/data-structures/status with name = {query.name}'
+    )
     response = jsonify(metadata.find_current_data_structure_status(query.name))
     response.headers.set('content-language', 'no')
     return response
@@ -60,7 +61,7 @@ def get_all_metadata(query: MetadataQuery):
 @metadata_api.route('/languages', methods=['GET'])
 @validate()
 def get_languages():
-    logger.info(f'GET /languages')
+    logger.info('GET /languages')
 
     response = jsonify(metadata.find_languages())
     return response

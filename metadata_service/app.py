@@ -12,7 +12,9 @@ from metadata_service.api.openapi_docs import openapi_docs
 from metadata_service.config.logging import (
     CustomJSONLog, CustomJSONRequestLogFormatter
 )
-from metadata_service.exceptions.exceptions import DataNotFoundException, RequestValidationException
+from metadata_service.exceptions.exceptions import (
+    DataNotFoundException, RequestValidationException
+)
 
 
 def init_json_logging():
@@ -42,9 +44,13 @@ init_json_logging()
 
 @app.after_request
 def after_request(response: Response):
-    response.headers.set('X-Request-ID', json_logging.get_correlation_id(request))
-
-    if 'Accept' in request.headers and request.headers['Accept'] == 'application/x-msgpack':
+    response.headers.set(
+        'X-Request-ID', json_logging.get_correlation_id(request)
+    )
+    if (
+        'Accept' in request.headers and
+        request.headers['Accept'] == 'application/x-msgpack'
+    ):
         # create a new Response to send the payload only as "data" field
         response_msgpack = make_response(msgpack.dumps(response.json))
         response_msgpack.headers.set('Content-Type', 'application/x-msgpack')
@@ -82,7 +88,7 @@ def handle_data_not_found(exc):
 
 
 @app.errorhandler(RequestValidationException)
-def handle_data_not_found(exc):
+def handle_invalid_request(exc):
     logger.exception(exc)
     return jsonify(exc.to_dict()), 400
 

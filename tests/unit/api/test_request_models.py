@@ -9,7 +9,7 @@ def test_metadata_query_correct_version():
     query = MetadataQuery(
         version='1.0.0.0'
     )
-    assert query.version == '1_0_0_0'
+    assert query.version == '1_0_0'
 
 
 def test_metadata_query_no_version():
@@ -37,7 +37,7 @@ def test_metadata_query_invalid_version2():
 def test_metadata_query_invalid_version3():
     with pytest.raises(RequestValidationException) as e:
         MetadataQuery(
-            version='1_0_0_0'
+            version='1_0_0'
         )
     assert 'Version is in incorrect format' in e.value.message['message']
 
@@ -71,4 +71,7 @@ def test_metadata_query_invalid_names():
             names={'a'},
             version='1.0.0.0'
         )
-    assert 'names field must be a list or a string' in e.value.message['message']
+    assert (
+        'names field must be a list or a string'
+        in e.value.message['message']
+    )

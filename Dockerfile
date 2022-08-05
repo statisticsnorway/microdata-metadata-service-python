@@ -47,7 +47,7 @@ WORKDIR /app
 COPY metadata_service metadata_service
 COPY --from=builder /app/pyproject.toml pyproject.toml
 COPY --from=builder /app/requirements.txt requirements.txt
-
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 #the output is sent straight to terminal without being first buffered

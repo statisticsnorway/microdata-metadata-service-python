@@ -1,5 +1,6 @@
 from flask import Blueprint
 
+
 observability = Blueprint("observability", __name__)
 
 
