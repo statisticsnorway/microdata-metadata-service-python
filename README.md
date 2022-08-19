@@ -26,8 +26,7 @@ poetry run pytest --cov=metadata_service/
 
 
 ### REST API documentation
-OpenAPI 3.0 specification file `/static/openapi.json` and ReDoc UI are used to display the REST API documentation.
-ReDoc UI is available at `/docs` endpoint.
+The API documentation is available at [data-store-api-doc](https://gitlab.sikt.no/raird/data-store-api-doc)
 
 
 ### Running without Docker

@@ -8,7 +8,6 @@ from werkzeug.exceptions import NotFound
 
 from metadata_service.api.metadata_api import metadata_api
 from metadata_service.api.observability import observability
-from metadata_service.api.openapi_docs import openapi_docs
 from metadata_service.config.logging import (
     CustomJSONLog, CustomJSONRequestLogFormatter
 )
@@ -37,7 +36,6 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.register_blueprint(observability)
 app.register_blueprint(metadata_api)
-app.register_blueprint(openapi_docs)
 
 init_json_logging()
 
