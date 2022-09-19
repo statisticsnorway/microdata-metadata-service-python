@@ -54,7 +54,9 @@ MOCKED_LANGUAGES = [
 DATA_STRUCTURES_FILE_PATH = (
     'tests/resources/fixtures/api/data_structures.json'
 )
-
+METADATA_ALL_FILE_PATH = (
+    'tests/resources/fixtures/domain/metadata_all.json'
+)
 
 def test_get_data_store(flask_app, mocker):
     spy = mocker.patch.object(
@@ -116,7 +118,8 @@ def test_get_data_structures(flask_app, mocker):
     spy.assert_called_with(
         ['FNR', 'AKT_ARBAP'],
         '3_2_1',
-        True
+        True,
+        False
     )
     assert response.headers['Content-Type'] == 'application/json'
     assert response.json == mocked_data_structures
@@ -143,7 +146,8 @@ def test_get_data_structures_with_messagepack(flask_app, mocker):
     spy.assert_called_with(
         ['FNR', 'AKT_ARBAP'],
         '3_2_1',
-        True
+        True,
+        False
     )
     assert response.headers['Content-Type'] == 'application/x-msgpack'
     assert msgpack.loads(response.data) == mocked_data_structures
@@ -177,11 +181,11 @@ def test_get_all_metadata(flask_app, mocker):
             'Accept': 'application/json'
         })
     spy.assert_called_with(
-        '3_2_1'
+        '3_2_1',
+        False
     )
     assert response.headers['Content-Type'] == 'application/json'
     assert response.json == mocked_metadata_all
-
 
 def test_get_languages(flask_app, mocker):
     spy = mocker.patch.object(
@@ -196,3 +200,59 @@ def test_get_languages(flask_app, mocker):
     spy.assert_called()
     assert response.headers['Content-Type'] == 'application/json'
     assert response.json == MOCKED_LANGUAGES
+
+def test_get_all_metadata_skip_code_lists(flask_app, mocker):
+    with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
+        mocked_metadata_all = json.load(f)
+
+    spy = mocker.patch.object(
+        metadata, 'find_all_metadata',
+        return_value=mocked_metadata_all
+    )
+    response: Response = flask_app.get(
+        url_for('metadata_api.get_all_metadata',
+                version='3.2.1.0',
+                skip_code_lists=True
+                ),
+        headers={
+            'X-Request-ID': 'test-123',
+            'Accept-Language': 'no',
+            'Accept': 'application/json'
+        })
+    spy.assert_called_with(
+        '3_2_1',
+        True
+    )
+    assert response.headers['Content-Type'] == 'application/json'
+    assert response.json == mocked_metadata_all
+
+def test_get_data_structures_skip_code_lists(flask_app, mocker):
+    with open(DATA_STRUCTURES_FILE_PATH, encoding='utf-8') as f:
+        mocked_data_structures = json.load(f)
+
+    spy = mocker.patch.object(
+        metadata, 'find_data_structures',
+        return_value=mocked_data_structures
+    )
+    response: Response = flask_app.get(
+        url_for('metadata_api.get_data_structures',
+                names='FNR,AKT_ARBAP',
+                version='3.2.1.0',
+                skip_code_lists=True
+                ),
+        headers={
+            'X-Request-ID': 'test-123',
+            'Accept-Language': 'no',
+            'Accept': 'application/json'
+        })
+    spy.assert_called_with(
+        ['FNR', 'AKT_ARBAP'],
+        '3_2_1',
+        True,
+        True
+    )
+    assert response.headers['Content-Type'] == 'application/json'
+    assert response.json == mocked_data_structures
+
+
+
