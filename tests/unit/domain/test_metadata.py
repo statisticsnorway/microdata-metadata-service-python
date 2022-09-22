@@ -16,6 +16,13 @@ DATA_STRUCTURES_FILE_PATH = (
     'tests/resources/fixtures/api/data_structures.json'
 )
 
+METADATA_ALL_NO_CODE_LIST_FILE_PATH = (
+    'tests/resources/fixtures/domain/metadata_all_no_code_list__1_0_0_0.json'
+)
+
+DATA_STRUCTURES_NO_CODE_LIST_FILE_PATH = (
+    'tests/resources/fixtures/api/data_structures_no_code_list.json'
+)
 
 def test_find_two_data_structures_with_attrs(mocker):
     with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
@@ -171,6 +178,24 @@ def test_find_all_datastore_versions_when_draft_version_empty(mocker):
     assert len(actual['versions']) == 1
     assert actual['versions'][0]['version'] == '1.0.0.0'
 
+def test_find_all_metadata_skip_code_list_and_missing_values_for_metadata_all(mocker):
+    
+    with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
+        mocked_metadata_all = json.load(f)
+
+    mocker.patch.object(
+        datastore, 'get_metadata_all',
+        return_value=mocked_metadata_all
+    )
+    
+    filtered_metadata = metadata.find_all_metadata_skip_code_list_and_missing_values(version='1.0.0.0')
+    __assert_code_list_and_missing_values(filtered_metadata['dataStructures'])
+
+    with open(METADATA_ALL_NO_CODE_LIST_FILE_PATH, encoding='utf-8') as f:
+        metadata_no_code_list = json.load(f)
+
+    assert metadata_no_code_list == filtered_metadata
+
 def test_find_all_metadata_skip_code_list_and_missing_values_for_data_structures(mocker):
     
     with open(DATA_STRUCTURES_FILE_PATH, encoding='utf-8') as f:
@@ -184,18 +209,10 @@ def test_find_all_metadata_skip_code_list_and_missing_values_for_data_structures
     filtered_metadata = metadata.find_all_metadata_skip_code_list_and_missing_values(version='1.0.0.0')
     __assert_code_list_and_missing_values(filtered_metadata)
 
-def test_find_all_metadata_skip_code_list_and_missing_values_for_data_structures(mocker):
-    
-    with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
-        mocked_metadata_all = json.load(f)
+    with open(DATA_STRUCTURES_NO_CODE_LIST_FILE_PATH, encoding='utf-8') as f:
+        data_structures_no_code_list = json.load(f)
 
-    mocker.patch.object(
-        datastore, 'get_metadata_all',
-        return_value=mocked_metadata_all
-    )
-    
-    filtered_metadata = metadata.find_all_metadata_skip_code_list_and_missing_values(version='1.0.0.0')
-    __assert_code_list_and_missing_values(filtered_metadata['dataStructures'])
+    assert data_structures_no_code_list == filtered_metadata
 
 def __assert_code_list_and_missing_values(metadata):
 
