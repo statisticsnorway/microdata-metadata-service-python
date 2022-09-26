@@ -76,12 +76,12 @@ def find_all_metadata_skip_code_list_and_missing_values(version):
     metadata = datastore.get_metadata_all(version)
      
     if 'dataStructures' in metadata:
-        __clear_code_list_and_missing_values(metadata['dataStructures'])
+        _clear_code_list_and_missing_values(metadata['dataStructures'])
     else:
-        __clear_code_list_and_missing_values(metadata)
+        _clear_code_list_and_missing_values(metadata)
     return metadata
 
-def __clear_code_list_and_missing_values(metadata):
+def _clear_code_list_and_missing_values(metadata):
     for md in metadata:
         for av in md['attributeVariables']:
             for rv in av['representedVariables']:
