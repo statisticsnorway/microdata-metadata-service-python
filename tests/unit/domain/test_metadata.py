@@ -1,7 +1,8 @@
 import json
-
+import pytest
 from metadata_service.adapter import datastore
 from metadata_service.domain import metadata
+from metadata_service.exceptions.exceptions import DataNotFoundException
 
 METADATA_ALL_FILE_PATH = (
     'tests/resources/fixtures/domain/metadata_all.json'
@@ -196,7 +197,7 @@ def test_find_all_metadata_skip_code_list_and_missing_values_for_metadata_all(mo
 
     assert metadata_no_code_list == filtered_metadata
 
-def test_find_all_metadata_skip_code_list_and_missing_values_for_data_structures(mocker):
+def test_find_all_metadata_skip_code_list_and_missing_values_for_fails_for_data_structures(mocker):
     
     with open(DATA_STRUCTURES_FILE_PATH, encoding='utf-8') as f:
         mocked_data_structures = json.load(f)
@@ -206,13 +207,8 @@ def test_find_all_metadata_skip_code_list_and_missing_values_for_data_structures
         return_value=mocked_data_structures
     )
     
-    filtered_metadata = metadata.find_all_metadata_skip_code_list_and_missing_values(version='1.0.0.0')
-    __assert_code_list_and_missing_values(filtered_metadata)
-
-    with open(DATA_STRUCTURES_NO_CODE_LIST_FILE_PATH, encoding='utf-8') as f:
-        data_structures_no_code_list = json.load(f)
-
-    assert data_structures_no_code_list == filtered_metadata
+    with pytest.raises(DataNotFoundException) as e:
+        metadata.find_all_metadata_skip_code_list_and_missing_values(version='1.0.0.0')
 
 def __assert_code_list_and_missing_values(metadata):
 

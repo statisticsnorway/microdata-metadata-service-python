@@ -78,7 +78,7 @@ def find_all_metadata_skip_code_list_and_missing_values(version):
     if 'dataStructures' in metadata:
         _clear_code_list_and_missing_values(metadata['dataStructures'])
     else:
-        _clear_code_list_and_missing_values(metadata)
+        raise DataNotFoundException(f'Expected dataStructures')
     return metadata
 
 def _clear_code_list_and_missing_values(metadata):
