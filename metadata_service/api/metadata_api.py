@@ -40,7 +40,8 @@ def get_data_structures(query: MetadataQuery):
     response = jsonify(metadata.find_data_structures(
         query.names,
         query.version,
-        query.include_attributes
+        query.include_attributes,
+        query.skip_code_lists
     ))
     response.headers.set('content-language', 'no')
     return response
@@ -52,7 +53,8 @@ def get_all_metadata(query: MetadataQuery):
     logger.info(f'GET /metadata/all with version: {query.version}')
 
     response = jsonify(metadata.find_all_metadata(
-        query.version
+        query.version,
+        query.skip_code_lists
     ))
     response.headers.set('content-language', 'no')
     return response
