@@ -187,6 +187,40 @@ def test_get_all_metadata(flask_app, mocker):
     assert response.headers['Content-Type'] == 'application/json'
     assert response.json == mocked_metadata_all
 
+def test_get_all_metadata_long_version_numbers(flask_app, mocker):
+    with open(DATA_STRUCTURES_FILE_PATH, encoding='utf-8') as f:
+        mocked_data_structures = json.load(f)
+    mocked_metadata_all = {
+        "dataStore": {
+            "name": "dummy datastore name",
+            "label": "dummy datastore label",
+            "description": "dummy datastore description",
+            "languageCode": "no"
+        },
+        "languages": MOCKED_LANGUAGES,
+        "dataStructures": mocked_data_structures
+    }
+
+    spy = mocker.patch.object(
+        metadata, 'find_all_metadata',
+        return_value=mocked_metadata_all
+    )
+    response: Response = flask_app.get(
+        url_for('metadata_api.get_all_metadata',
+                version='1234.5678.9012.0'
+                ),
+        headers={
+            'X-Request-ID': 'test-123',
+            'Accept-Language': 'no',
+            'Accept': 'application/json'
+        })
+    spy.assert_called_with(
+        '1234_5678_9012',
+        False
+    )
+    assert response.headers['Content-Type'] == 'application/json'
+    assert response.json == mocked_metadata_all
+
 def test_get_languages(flask_app, mocker):
     spy = mocker.patch.object(
         metadata, 'find_languages',
