@@ -1,9 +1,10 @@
 import json
-import platform
 import sys
 
 import json_logging
 import tomlkit
+
+from metadata_service.config import environment
 
 
 def _get_project_meta():
@@ -14,7 +15,7 @@ def _get_project_meta():
 
 
 pkg_meta = _get_project_meta()
-host = platform.node()
+host = environment.get('DOCKER_HOST_NAME')
 command = json.dumps(sys.argv)
 
 
