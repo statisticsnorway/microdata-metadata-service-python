@@ -14,7 +14,6 @@ def _get_project_meta():
 
 
 pkg_meta = _get_project_meta()
-service_name = "datastore-version-manager"
 host = platform.node()
 command = json.dumps(sys.argv)
 
@@ -58,7 +57,7 @@ def create_microdata_json_log(json_log_object, record):
         "method": json_log_object.get('method'),
         "responseTime": json_log_object.get('response_time_ms'),
         "schemaVersion": "v3",
-        "serviceName": service_name,
+        "serviceName": "metadata-service",
         "serviceVersion": str(pkg_meta['version']),
         "source_host": json_log_object.get('remote_host'),
         "statusCode": json_log_object.get('response_status'),
