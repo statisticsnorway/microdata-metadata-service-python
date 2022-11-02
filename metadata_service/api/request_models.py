@@ -40,7 +40,7 @@ class MetadataQuery(BaseModel, extra=Extra.forbid, validate_assignment=True):
         if v.startswith('0.0.0') and dot_count == 3:
             return 'DRAFT'
         else:
-            return v.replace('.', '_')[:5]
+            return '_'.join(v.split('.')[:-1])
 
 
 class NameParam(BaseModel, extra=Extra.forbid):
