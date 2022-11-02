@@ -13,8 +13,8 @@ gunicorn = "^20.1.0"
 pydantic = "^1.9.1"
 Flask-Pydantic = "^0.9.0"
 msgpack = "^1.0.4"
-apispec = "^5.2.2"
 apispec-webframeworks = "^0.5.2"
+apispec = "^6.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
