@@ -3,7 +3,8 @@ import os
 
 def _initialize_environment() -> dict:
     return {
-        'DATASTORE_ROOT_DIR': os.environ['DATASTORE_ROOT_DIR']
+        'DATASTORE_ROOT_DIR': os.environ['DATASTORE_ROOT_DIR'],
+        'DOCKER_HOST_NAME': os.environ['DOCKER_HOST_NAME']
     }
 
 
