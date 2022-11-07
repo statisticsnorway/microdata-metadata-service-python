@@ -33,6 +33,7 @@ The API documentation is available at [data-store-api-doc](https://gitlab.sikt.n
 You should add the appropriate environmental variables to your local system:
 ```sh
 export DATASTORE_ROOT_DIR=/datastore
+export DOCKER_HOST_NAME=<host name>
 ```
 
 Open terminal and go to root directory of the project and run:
