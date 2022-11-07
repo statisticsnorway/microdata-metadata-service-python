@@ -512,7 +512,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "flake8 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "af8bd1bc9712db3b2f4f46fa01987874229e8e45b88282defb25f7627e1b05a6"
+content-hash = "16b9e77b43d5195407da82698a8e1e3eb8e589d7d395e5128cf73412db9be5d4"
 
 [metadata.files]
 apispec = [
