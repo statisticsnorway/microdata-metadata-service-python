@@ -1,4 +1,5 @@
 import logging
+import sys
 import uuid
 
 import json_logging
@@ -30,8 +31,9 @@ def init_json_logging():
     )
 
 
-logging.getLogger("json_logging").setLevel(logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+logger.addHandler(logging.StreamHandler(sys.stdout))
 
 app = Flask(__name__)
 app.register_blueprint(observability)
