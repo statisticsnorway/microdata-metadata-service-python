@@ -30,7 +30,7 @@ def init_json_logging():
     )
 
 
-logging.getLogger("json_logging").setLevel(logging.WARNING)
+logging.getLogger("json_logging").setLevel(logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
