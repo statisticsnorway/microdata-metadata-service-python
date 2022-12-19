@@ -14,7 +14,7 @@ class MetadataQuery(BaseModel, extra=Extra.forbid, validate_assignment=True):
     names: List[str] = []
     version: str
     include_attributes: bool = False
-    skip_code_lists : bool = False
+    skip_code_lists: bool = False
 
     @validator('names', pre=True)
     @classmethod

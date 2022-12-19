@@ -58,6 +58,7 @@ METADATA_ALL_FILE_PATH = (
     'tests/resources/fixtures/domain/metadata_all.json'
 )
 
+
 def test_get_data_store(flask_app, mocker):
     spy = mocker.patch.object(
         metadata, 'find_all_datastore_versions',
@@ -187,6 +188,7 @@ def test_get_all_metadata(flask_app, mocker):
     assert response.headers['Content-Type'] == 'application/json'
     assert response.json == mocked_metadata_all
 
+
 def test_get_all_metadata_long_version_numbers(flask_app, mocker):
     with open(DATA_STRUCTURES_FILE_PATH, encoding='utf-8') as f:
         mocked_data_structures = json.load(f)
@@ -221,6 +223,7 @@ def test_get_all_metadata_long_version_numbers(flask_app, mocker):
     assert response.headers['Content-Type'] == 'application/json'
     assert response.json == mocked_metadata_all
 
+
 def test_get_languages(flask_app, mocker):
     spy = mocker.patch.object(
         metadata, 'find_languages',
@@ -234,6 +237,7 @@ def test_get_languages(flask_app, mocker):
     spy.assert_called()
     assert response.headers['Content-Type'] == 'application/json'
     assert response.json == MOCKED_LANGUAGES
+
 
 def test_get_all_metadata_skip_code_lists(flask_app, mocker):
     with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
@@ -259,6 +263,7 @@ def test_get_all_metadata_skip_code_lists(flask_app, mocker):
     )
     assert response.headers['Content-Type'] == 'application/json'
     assert response.json == mocked_metadata_all
+
 
 def test_get_data_structures_skip_code_lists(flask_app, mocker):
     with open(DATA_STRUCTURES_FILE_PATH, encoding='utf-8') as f:
@@ -287,6 +292,3 @@ def test_get_data_structures_skip_code_lists(flask_app, mocker):
     )
     assert response.headers['Content-Type'] == 'application/json'
     assert response.json == mocked_data_structures
-
-
-
