@@ -1,3 +1,4 @@
+from itertools import chain
 import json
 import pytest
 from metadata_service.adapter import datastore
@@ -25,6 +26,7 @@ DATA_STRUCTURES_NO_CODE_LIST_FILE_PATH = (
     'tests/resources/fixtures/api/data_structures_no_code_list.json'
 )
 
+
 def test_find_two_data_structures_with_attrs(mocker):
     with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
         mocked_metadata_all = json.load(f)
@@ -39,7 +41,7 @@ def test_find_two_data_structures_with_attrs(mocker):
         skip_code_lists=False
     )
     assert len(actual) == 2
-    income = next(  
+    income = next(
         data_structure for data_structure
         in mocked_metadata_all["dataStructures"]
         if data_structure["name"] == 'TEST_PERSON_INCOME'
@@ -97,7 +99,7 @@ def test_find_data_structures_no_name_filter(mocker):
     assert len(actual) == 2
 
 
-def test_find_current_data_structure_status_released(mocker):
+def test_find_current_data_structure_status(mocker):
     with open(DATASTORE_VERSIONS_FILE_PATH, encoding='utf-8') as f:
         mocked_datastore_versions = json.load(f)
     with open(DRAFT_VERSION_FILE_PATH, encoding='utf-8') as f:
@@ -110,38 +112,32 @@ def test_find_current_data_structure_status_released(mocker):
         datastore, 'get_draft_version',
         return_value=mocked_draft_version
     )
-    actual = metadata.find_current_data_structure_status(
+    actual_draft = metadata.find_current_data_structure_status(
+        'TEST_PERSON_HOBBIES'
+    )
+    actual_released = metadata.find_current_data_structure_status(
         'TEST_PERSON_INCOME'
     )
-    assert actual == {
+    actual_removed = metadata.find_current_data_structure_status(
+        'TEST_PERSON_INCOME'
+    )
+    assert actual_draft == {
+        "name": "TEST_PERSON_HOBBIES",
+        "operation": "ADD",
+        "releaseTime": 1608000000,
+        "releaseStatus": "DRAFT"
+    }
+    assert actual_released == {
         "name": "TEST_PERSON_INCOME",
         "operation": "ADD",
         "releaseTime": 1607332752,
         "releaseStatus": "RELEASED"
     }
-
-
-def test_find_current_data_structure_status_draft(mocker):
-    with open(DATASTORE_VERSIONS_FILE_PATH, encoding='utf-8') as f:
-        mocked_datastore_versions = json.load(f)
-    with open(DRAFT_VERSION_FILE_PATH, encoding='utf-8') as f:
-        mocked_draft_version = json.load(f)
-    mocker.patch.object(
-        datastore, 'get_datastore_versions',
-        return_value=mocked_datastore_versions
-    )
-    mocker.patch.object(
-        datastore, 'get_draft_version',
-        return_value=mocked_draft_version
-    )
-    actual = metadata.find_current_data_structure_status(
-        'TEST_PERSON_HOBBIES'
-    )
-    assert actual == {
-        "name": "TEST_PERSON_HOBBIES",
-        "operation": "ADD",
-        "releaseTime": 1608000000,
-        "releaseStatus": "DRAFT"
+    assert actual_removed == {
+        "name": "TEST_PERSON_INCOME",
+        "operation": "REMOVE",
+        "releaseTime": 1607332762,
+        "releaseStatus": "DELETED"
     }
 
 
@@ -159,9 +155,9 @@ def test_find_all_datastore_versions(mocker):
         return_value=mocked_draft_version
     )
     actual = metadata.find_all_datastore_versions()
-    assert len(actual['versions']) == 2
+    assert len(actual['versions']) == 3
     assert actual['versions'][0]['version'] == '0.0.0.1608000000'
-    assert actual['versions'][1]['version'] == '1.0.0.0'
+    assert actual['versions'][1]['version'] == '2.0.0.0'
 
 
 def test_find_all_datastore_versions_when_draft_version_empty(mocker):
@@ -176,11 +172,11 @@ def test_find_all_datastore_versions_when_draft_version_empty(mocker):
         return_value={}
     )
     actual = metadata.find_all_datastore_versions()
-    assert len(actual['versions']) == 1
-    assert actual['versions'][0]['version'] == '1.0.0.0'
+    assert len(actual['versions']) == 2
+    assert actual['versions'][0]['version'] == '2.0.0.0'
 
-def test_find_all_metadata_skip_code_list_and_missing_values_for_metadata_all(mocker):
-    
+
+def test_get_metadata_all_skip_code_list_and_missing_values(mocker):
     with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
         mocked_metadata_all = json.load(f)
 
@@ -188,7 +184,7 @@ def test_find_all_metadata_skip_code_list_and_missing_values_for_metadata_all(mo
         datastore, 'get_metadata_all',
         return_value=mocked_metadata_all
     )
-    
+
     filtered_metadata = metadata.find_all_metadata_skip_code_list_and_missing_values(version='1.0.0.0')
     __assert_code_list_and_missing_values(filtered_metadata['dataStructures'])
 
@@ -197,8 +193,8 @@ def test_find_all_metadata_skip_code_list_and_missing_values_for_metadata_all(mo
 
     assert metadata_no_code_list == filtered_metadata
 
+
 def test_find_all_metadata_skip_code_list_and_missing_values_for_fails_for_data_structures(mocker):
-    
     with open(DATA_STRUCTURES_FILE_PATH, encoding='utf-8') as f:
         mocked_data_structures = json.load(f)
 
@@ -206,28 +202,37 @@ def test_find_all_metadata_skip_code_list_and_missing_values_for_fails_for_data_
         datastore, 'get_metadata_all',
         return_value=mocked_data_structures
     )
-    
+
     with pytest.raises(DataNotFoundException) as e:
-        metadata.find_all_metadata_skip_code_list_and_missing_values(version='1.0.0.0')
+        metadata.find_all_metadata_skip_code_list_and_missing_values(
+            version='1.0.0.0'
+        )
 
-def __assert_code_list_and_missing_values(metadata):
 
-    for md in metadata:
-        for av in md['attributeVariables']:
-            for rv in av['representedVariables']:
-                if 'codeLists' in rv['valueDomain']: 
-                    assert rv['valueDomain']['codeList'] == []
-                if 'missingValues' in rv['valueDomain']: 
-                    assert rv['valueDomain']['missingValues'] == []     
-        for iv in md['identifierVariables']:
-            for rv in iv['representedVariables']:
-                if 'codeList' in rv['valueDomain']:
-                    assert rv['valueDomain']['codeList'] == []
-                if 'missingValues' in rv['valueDomain']:
-                    assert rv['valueDomain']['missingValues'] == []
-        for rv in md['measureVariable']['representedVariables']:
-            if 'codeList' in rv['valueDomain']: 
-                assert rv['valueDomain']['codeList'] == []
-            if 'missingValues' in rv['valueDomain']: 
-                assert rv['valueDomain']['missingValues'] == []
-
+def __assert_code_list_and_missing_values(metadata_all):
+    represented_variables = []
+    for metadata_dict in metadata_all:
+        represented_measure = (
+            metadata_dict['measureVariable']['representedVariables']
+        )
+        represented_identifiers = list(chain(*[
+            identifier['representedVariables']
+            for identifier in metadata_dict['identifierVariables']
+        ]))
+        represented_attributes = list(chain(*[
+            attribute['representedVariables']
+            for attribute in metadata_dict['attributeVariables']
+        ]))
+        represented_variables += (
+            represented_measure
+            + represented_identifiers
+            + represented_attributes
+        )
+    assert all([
+        variable['valueDomain'].get('codeList', []) == []
+        for variable in represented_variables
+    ])
+    assert all([
+        variable['valueDomain'].get('missingValues', []) == []
+        for variable in represented_variables
+    ])
