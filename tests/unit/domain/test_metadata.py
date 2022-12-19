@@ -115,6 +115,9 @@ def test_find_current_data_structure_status(mocker):
     actual_draft = metadata.find_current_data_structure_status(
         'TEST_PERSON_HOBBIES'
     )
+    actual_pending_release = metadata.find_current_data_structure_status(
+        'TEST_PERSON_SAVINGS'
+    )
     actual_released = metadata.find_current_data_structure_status(
         'TEST_PERSON_PETS'
     )
@@ -126,6 +129,12 @@ def test_find_current_data_structure_status(mocker):
         "operation": "ADD",
         "releaseTime": 1608000000,
         "releaseStatus": "DRAFT"
+    }
+    assert actual_pending_release == {
+        "name": "TEST_PERSON_SAVINGS",
+        "operation": "ADD",
+        "releaseTime": 1608000000,
+        "releaseStatus": "PENDING_RELEASE"
     }
     assert actual_released == {
         "name": "TEST_PERSON_PETS",

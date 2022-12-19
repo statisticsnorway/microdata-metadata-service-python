@@ -9,6 +9,12 @@
       "name": "TEST_PERSON_HOBBIES",
       "operation": "ADD",
       "releaseStatus": "DRAFT"
+    },
+    {
+      "description": "Første publisering",
+      "name": "TEST_PERSON_SAVINGS",
+      "operation": "ADD",
+      "releaseStatus": "PENDING_RELEASE"
     }
   ],
   "updateType": "MINOR"
