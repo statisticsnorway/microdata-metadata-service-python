@@ -116,7 +116,7 @@ def test_find_current_data_structure_status(mocker):
         'TEST_PERSON_HOBBIES'
     )
     actual_released = metadata.find_current_data_structure_status(
-        'TEST_PERSON_INCOME'
+        'TEST_PERSON_PETS'
     )
     actual_removed = metadata.find_current_data_structure_status(
         'TEST_PERSON_INCOME'
@@ -128,7 +128,7 @@ def test_find_current_data_structure_status(mocker):
         "releaseStatus": "DRAFT"
     }
     assert actual_released == {
-        "name": "TEST_PERSON_INCOME",
+        "name": "TEST_PERSON_PETS",
         "operation": "ADD",
         "releaseTime": 1607332752,
         "releaseStatus": "RELEASED"
