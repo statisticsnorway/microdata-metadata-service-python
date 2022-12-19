@@ -29,10 +29,7 @@ def find_current_data_structure_status(datastructure_name: str):
                 'name': datastructure_name,
                 'operation': dataset['operation'],
                 'releaseTime': version['releaseTime'],
-                'releaseStatus': (
-                    'DRAFT' if version['version'].startswith('0.0.0.')
-                    else dataset['releaseStatus']
-                )
+                'releaseStatus': dataset['releaseStatus']
             }
     raise DataNotFoundException(
         f"No data structure named {datastructure_name} was found"
