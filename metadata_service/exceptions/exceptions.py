@@ -3,7 +3,7 @@ class DataNotFoundException(Exception):
         super().__init__()
         self.message = {
             'type': 'DATA_NOT_FOUND',
-            'code': 404,
+            'code': 105,
             'service': 'metadata-service',
             'message': msg
         }
@@ -16,8 +16,8 @@ class InvalidStorageFormatException(Exception):
     def __init__(self, msg):
         super().__init__()
         self.message = {
-            'type': 'DATA_NOT_FOUND',
-            'code': 500,
+            'type': 'SYSTEM_ERROR',
+            'code': 202,
             'service': 'metadata-service',
             'message': msg
         }
