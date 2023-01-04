@@ -13,7 +13,9 @@ from metadata_service.config.logging import (
     CustomJSONLog, CustomJSONRequestLogFormatter
 )
 from metadata_service.exceptions.exceptions import (
-    DataNotFoundException, RequestValidationException
+    DataNotFoundException,
+    InvalidStorageFormatException,
+    RequestValidationException
 )
 
 
@@ -91,6 +93,12 @@ def handle_data_not_found(exc):
 def handle_invalid_request(exc):
     logger.exception(exc)
     return jsonify(exc.to_dict()), 400
+
+
+@app.errorhandler(InvalidStorageFormatException)
+def handle_invalid_format(exc):
+    logger.exception(exc)
+    return jsonify(exc.to_dict()), 500
 
 
 # this is needed to run the application in IDE

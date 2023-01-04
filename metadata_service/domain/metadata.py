@@ -1,7 +1,8 @@
-from typing import List
-
+from itertools import chain
 from metadata_service.adapter import datastore
-from metadata_service.exceptions.exceptions import DataNotFoundException
+from metadata_service.exceptions.exceptions import (
+    DataNotFoundException, InvalidStorageFormatException
+)
 
 
 def find_all_datastore_versions():
@@ -37,7 +38,7 @@ def find_current_data_structure_status(datastructure_name: str):
 
 
 def find_data_structures(
-    names: List[str],
+    names: list[str],
     version: str,
     include_attributes: bool,
     skip_code_lists: bool = False
@@ -59,10 +60,10 @@ def find_data_structures(
 
 
 def find_all_metadata(version, skip_code_lists: bool = False):
-    if not skip_code_lists:
-        return datastore.get_metadata_all(version)
-    else:
-        return find_all_metadata_skip_code_list_and_missing_values(version)
+    return (
+        datastore.get_metadata_all(version) if not skip_code_lists
+        else find_all_metadata_skip_code_list_and_missing_values(version)
+    )
 
 
 def find_languages():
@@ -75,31 +76,35 @@ def find_languages():
 
 
 def find_all_metadata_skip_code_list_and_missing_values(version):
-    metadata = datastore.get_metadata_all(version)
-    if 'dataStructures' in metadata:
-        _clear_code_list_and_missing_values(metadata['dataStructures'])
+    metadata_all = datastore.get_metadata_all(version)
+    if 'dataStructures' in metadata_all:
+        _clear_code_list_and_missing_values(metadata_all['dataStructures'])
     else:
-        raise DataNotFoundException('Expected dataStructures')
-    return metadata
+        raise InvalidStorageFormatException('Invalid metadata format')
+    return metadata_all
 
 
-def _clear_code_list_and_missing_values(metadata):
-    for md in metadata:
-        for av in md['attributeVariables']:
-            for rv in av['representedVariables']:
-                if 'codeList' in rv['valueDomain']:
-                    rv['valueDomain']['codeList'].clear()
-                if 'missingValues' in rv['valueDomain']:
-                    rv['valueDomain']['missingValues'].clear()
-        for iv in md['identifierVariables']:
-            for rv in iv['representedVariables']:
-                if 'codeList' in rv['valueDomain']:
-                    rv['valueDomain']['codeList'].clear()
-                if 'missingValues' in rv['valueDomain']:
-                    rv['valueDomain']['missingValues'].clear()
-        for rv in md['measureVariable']['representedVariables']:
-            if 'codeList' in rv['valueDomain']:
-                rv['valueDomain']['codeList'].clear()
-            if 'missingValues' in rv['valueDomain']:
-                rv['valueDomain']['missingValues'].clear()
-    return metadata
+def _clear_code_list_and_missing_values(data_structures: list[dict]):
+    represented_variables = []
+    for metadata in data_structures:
+        represented_measure = (
+            metadata['measureVariable']['representedVariables']
+        )
+        represented_identifiers = list(chain(*[
+            identifier['representedVariables']
+            for identifier in metadata['identifierVariables']
+        ]))
+        represented_attributes = list(chain(*[
+            attribute['representedVariables']
+            for attribute in metadata['attributeVariables']
+        ]))
+        represented_variables += (
+            represented_measure
+            + represented_identifiers
+            + represented_attributes
+        )
+    for represented_variable in represented_variables:
+        if 'codeList' in represented_variable['valueDomain']:
+            represented_variable['valueDomain']['codeList'].clear()
+        if 'missingValues' in represented_variable['valueDomain']:
+            represented_variable['valueDomain']['missingValues'].clear()
