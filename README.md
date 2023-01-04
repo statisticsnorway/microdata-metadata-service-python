@@ -47,6 +47,8 @@ docker build --tag metadata-service:local-latest .
 docker run --publish 8080:8080 \
 --rm \
 --env DATASTORE_ROOT_DIR=/datastore \
+--env PORT=8000 \
+--env DOCKER_HOST_NAME=local \
 -v /path/to/datastore:/datastore metadata-service:local-latest
 ````
 
