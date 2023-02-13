@@ -9,7 +9,7 @@ def test_metadata_query_correct_version():
     query = MetadataQuery(
         version='1.0.0.0'
     )
-    assert query.version == '1_0_0'
+    assert query.version == '1.0.0.0'
 
 
 def test_metadata_query_no_version():
@@ -46,7 +46,7 @@ def test_metadata_query_draft_version():
     query = MetadataQuery(
         version='0.0.0.12345'
     )
-    assert query.version == 'DRAFT'
+    assert query.version == '0.0.0.12345'
 
 
 def test_metadata_query_names_as_str():

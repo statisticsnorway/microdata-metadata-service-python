@@ -4,6 +4,7 @@ import msgpack
 from flask import url_for, Response
 
 from metadata_service.domain import metadata
+from metadata_service.domain.version import Version
 
 MOCKED_DATASTORE_VERSIONS = {
     "name": "SSB-RAIRD",
@@ -116,9 +117,10 @@ def test_get_data_structures(flask_app, mocker):
             'Accept-Language': 'no',
             'Accept': 'application/json'
         })
+
     spy.assert_called_with(
         ['FNR', 'AKT_ARBAP'],
-        '3_2_1',
+        Version('3.2.1.0'),
         True,
         False
     )
@@ -146,7 +148,7 @@ def test_get_data_structures_with_messagepack(flask_app, mocker):
         })
     spy.assert_called_with(
         ['FNR', 'AKT_ARBAP'],
-        '3_2_1',
+        Version('3.2.1.0'),
         True,
         False
     )
@@ -182,7 +184,7 @@ def test_get_all_metadata(flask_app, mocker):
             'Accept': 'application/json'
         })
     spy.assert_called_with(
-        '3_2_1',
+        Version('3.2.1.0'),
         False
     )
     assert response.headers['Content-Type'] == 'application/json'
@@ -217,7 +219,7 @@ def test_get_all_metadata_long_version_numbers(flask_app, mocker):
             'Accept': 'application/json'
         })
     spy.assert_called_with(
-        '1234_5678_9012',
+        Version('1234.5678.9012.0'),
         False
     )
     assert response.headers['Content-Type'] == 'application/json'
@@ -258,7 +260,7 @@ def test_get_all_metadata_skip_code_lists(flask_app, mocker):
             'Accept': 'application/json'
         })
     spy.assert_called_with(
-        '3_2_1',
+        Version('3.2.1.0'),
         True
     )
     assert response.headers['Content-Type'] == 'application/json'
@@ -286,7 +288,7 @@ def test_get_data_structures_skip_code_lists(flask_app, mocker):
         })
     spy.assert_called_with(
         ['FNR', 'AKT_ARBAP'],
-        '3_2_1',
+        Version('3.2.1.0'),
         True,
         True
     )

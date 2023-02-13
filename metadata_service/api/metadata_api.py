@@ -5,6 +5,7 @@ from flask_pydantic import validate
 
 from metadata_service.api.request_models import NameParam, MetadataQuery
 from metadata_service.domain import metadata
+from metadata_service.domain.version import Version
 
 logger = logging.getLogger()
 metadata_api = Blueprint('metadata_api', __name__)
@@ -39,7 +40,7 @@ def get_data_structures(query: MetadataQuery):
 
     response = jsonify(metadata.find_data_structures(
         query.names,
-        query.version,
+        Version(query.version),
         query.include_attributes,
         query.skip_code_lists
     ))
@@ -53,7 +54,7 @@ def get_all_metadata(query: MetadataQuery):
     logger.info(f'GET /metadata/all with version: {query.version}')
 
     response = jsonify(metadata.find_all_metadata(
-        query.version,
+        Version(query.version),
         query.skip_code_lists
     ))
     response.headers.set('content-language', 'no')

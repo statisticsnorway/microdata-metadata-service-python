@@ -1,8 +1,8 @@
 import json
 
 from metadata_service.config import environment
+from metadata_service.domain.version import Version
 from metadata_service.exceptions.exceptions import DataNotFoundException
-
 
 DATASTORE_ROOT_DIR = environment.get('DATASTORE_ROOT_DIR')
 
@@ -23,10 +23,15 @@ def get_datastore_versions() -> dict:
         return json.load(f)
 
 
-def get_metadata_all(version: str) -> str:
+def get_metadata_all(version: Version) -> str:
+    if version.is_draft():
+        file_version = 'DRAFT'
+    else:
+        file_version = version.to_3_underscored()
+
     metadata_all_file_path = (
         f'{DATASTORE_ROOT_DIR}/datastore/'
-        f'metadata_all__{version}.json'
+        f'metadata_all__{file_version}.json'
     )
     try:
         with open(metadata_all_file_path, 'r', encoding="utf-8") as f:
