@@ -4,12 +4,14 @@ from itertools import chain
 import pytest
 
 from metadata_service.adapter import datastore
+from metadata_service.config import environment
 from metadata_service.domain import metadata
+from metadata_service.domain.version import Version
 from metadata_service.exceptions.exceptions import (
-    InvalidStorageFormatException
+    InvalidStorageFormatException, InvalidDraftVersionException
 )
 
-
+DATASTORE_ROOT_DIR = environment.get('DATASTORE_ROOT_DIR')
 FIXTURES_DIR = 'tests/resources/fixtures'
 METADATA_ALL_FILE_PATH = (
     f'{FIXTURES_DIR}/domain/metadata_all.json'
@@ -18,7 +20,7 @@ DATASTORE_VERSIONS_FILE_PATH = (
     f'{FIXTURES_DIR}/domain/datastore_versions.json'
 )
 DRAFT_VERSION_FILE_PATH = (
-    f'{FIXTURES_DIR}/domain/draft_version.json'
+    f'{DATASTORE_ROOT_DIR}/datastore/draft_version.json'
 )
 DATA_STRUCTURES_FILE_PATH = (
     f'{FIXTURES_DIR}/api/data_structures.json'
@@ -42,7 +44,7 @@ def test_find_two_data_structures_with_attrs(mocker):
     )
     actual = metadata.find_data_structures(
         ['TEST_PERSON_INCOME', 'TEST_PERSON_PETS'],
-        '1_0_0',
+        Version('1.0.0.0'),
         True,
         skip_code_lists=False
     )
@@ -70,7 +72,7 @@ def test_find_two_data_structures_without_attrs(mocker):
     )
     actual = metadata.find_data_structures(
         ['TEST_PERSON_INCOME', 'TEST_PERSON_PETS'],
-        '1_0_0',
+        Version('1.0.0.0'),
         False,
         skip_code_lists=False
     )
@@ -98,7 +100,7 @@ def test_find_data_structures_no_name_filter(mocker):
     )
     actual = metadata.find_data_structures(
         [],
-        '1_0_0',
+        Version('1.0.0.0'),
         True,
         skip_code_lists=False
     )
@@ -201,7 +203,7 @@ def test_get_metadata_all_skip_code_list_and_missing_values(mocker):
     )
     filtered_metadata = (
         metadata.find_all_metadata_skip_code_list_and_missing_values(
-            version='1.0.0.0'
+            Version('1.0.0.0')
         )
     )
     _assert_code_list_and_missing_values(filtered_metadata['dataStructures'])
@@ -222,9 +224,46 @@ def test_find_all_metadata_skip_code_list_and_missing_values_invalid_model(
     )
     with pytest.raises(InvalidStorageFormatException) as e:
         metadata.find_all_metadata_skip_code_list_and_missing_values(
-            version='1.0.0.0'
+            Version('1.0.0.0')
         )
     assert 'Invalid metadata format' == e.value.to_dict()['message']
+
+
+def test_get_draft_metadata_all(mocker):
+    with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
+        mocked_metadata_all = json.load(f)
+
+    mocker.patch.object(
+        datastore, 'get_metadata_all',
+        return_value=mocked_metadata_all
+    )
+    filtered_metadata = (
+        metadata.find_all_metadata(
+            Version('0.0.0.1608000000')
+        )
+    )
+
+    assert 'dataStructures' in filtered_metadata
+
+
+def test_get_draft_metadata_all_invalid_draft_version(mocker):
+    with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
+        mocked_metadata_all = json.load(f)
+
+    mocker.patch.object(
+        datastore, 'get_metadata_all',
+        return_value=mocked_metadata_all
+    )
+
+    with pytest.raises(InvalidDraftVersionException) as e:
+        metadata.find_all_metadata(
+            Version('0.0.0.2')
+        )
+
+    assert (
+        'Requested draft version'
+        in str(e)
+    )
 
 
 def _assert_code_list_and_missing_values(metadata_all):

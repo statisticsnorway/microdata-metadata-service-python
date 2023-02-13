@@ -15,7 +15,7 @@ from metadata_service.config.logging import (
 from metadata_service.exceptions.exceptions import (
     DataNotFoundException,
     InvalidStorageFormatException,
-    RequestValidationException
+    RequestValidationException, InvalidDraftVersionException
 )
 
 
@@ -87,6 +87,12 @@ def handle_url_invalid(exc):
 def handle_data_not_found(exc):
     logger.exception(exc)
     return jsonify(exc.to_dict()), 404
+
+
+@app.errorhandler(InvalidDraftVersionException)
+def handle_invalid_draft(exc):
+    logger.exception(exc)
+    return str(exc), 404
 
 
 @app.errorhandler(RequestValidationException)

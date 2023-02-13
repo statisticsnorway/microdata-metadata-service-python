@@ -18,11 +18,11 @@ class MetadataQuery(BaseModel, extra=Extra.forbid, validate_assignment=True):
 
     @validator('names', pre=True)
     @classmethod
-    def split_str(cls, v):
-        if isinstance(v, List):
-            return v[0].split(',')
-        elif isinstance(v, str):
-            return v.split(',')
+    def split_str(cls, names):
+        if isinstance(names, List):
+            return names[0].split(',')
+        elif isinstance(names, str):
+            return names.split(',')
         else:
             raise RequestValidationException(
                 'names field must be a list or a string'
@@ -30,17 +30,13 @@ class MetadataQuery(BaseModel, extra=Extra.forbid, validate_assignment=True):
 
     @validator('version', pre=True)
     @classmethod
-    def to_file_version(cls, v: str):
-        if not SEMVER_4_PARTS_REG_EXP.match(v):
+    def validate_version(cls, version: str):
+        if not SEMVER_4_PARTS_REG_EXP.match(version):
             raise RequestValidationException(
-                f'Version is in incorrect format: {v}. '
-                'Should consist of 4 parts, e.g. 1.0.0.0.'
+                f'Version is in incorrect format: {version}. '
+                'Should consist of 4 parts, e.g. 1.0.0.0'
             )
-        dot_count = v.count('.')
-        if v.startswith('0.0.0') and dot_count == 3:
-            return 'DRAFT'
-        else:
-            return '_'.join(v.split('.')[:-1])
+        return version
 
 
 class NameParam(BaseModel, extra=Extra.forbid):

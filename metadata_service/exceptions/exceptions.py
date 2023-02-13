@@ -38,3 +38,7 @@ class RequestValidationException(Exception):
 
     def to_dict(self):
         return self.message
+
+
+class InvalidDraftVersionException(Exception):
+    ...
