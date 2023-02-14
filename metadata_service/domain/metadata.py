@@ -116,7 +116,7 @@ def _clear_code_list_and_missing_values(data_structures: list[dict]):
 
 
 def _validate_version(version: Version):
-    if version.is_draft():
+    if version.is_draft() and version.draft != '0':
         draft_version = datastore.get_draft_version()
         if draft_version['version'] != version.to_4_dotted():
             raise InvalidDraftVersionException(

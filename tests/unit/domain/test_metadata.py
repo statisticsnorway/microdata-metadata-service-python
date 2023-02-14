@@ -246,6 +246,23 @@ def test_get_draft_metadata_all(mocker):
     assert 'dataStructures' in filtered_metadata
 
 
+def test_get_draft_metadata_all_0_0_0_0(mocker):
+    with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
+        mocked_metadata_all = json.load(f)
+
+    mocker.patch.object(
+        datastore, 'get_metadata_all',
+        return_value=mocked_metadata_all
+    )
+    filtered_metadata = (
+        metadata.find_all_metadata(
+            Version('0.0.0.0')
+        )
+    )
+
+    assert 'dataStructures' in filtered_metadata
+
+
 def test_get_draft_metadata_all_invalid_draft_version(mocker):
     with open(METADATA_ALL_FILE_PATH, encoding='utf-8') as f:
         mocked_metadata_all = json.load(f)
