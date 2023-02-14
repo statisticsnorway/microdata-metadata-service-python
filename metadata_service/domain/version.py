@@ -22,7 +22,9 @@ class Version:
         return '.'.join([self.major, self.minor, self.patch, self.draft])
 
     def is_draft(self):
-        return self.draft != '0'
+        return self.major == '0' \
+               and self.minor == '0'\
+               and self.patch == '0'
 
     def __str__(self):
         return ".".join([self.major, self.minor, self.patch, self.draft])
