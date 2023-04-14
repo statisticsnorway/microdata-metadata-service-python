@@ -38,7 +38,7 @@ COPY poetry.lock pyproject.toml /app/
 # Install poetry and export dep endencies to requirements yaml
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.1.14
-RUN poetry export > requirements.txt
+RUN poetry export --without-hashes > requirements.txt
 
 # Production image
 FROM python:3.9-slim-bullseye
