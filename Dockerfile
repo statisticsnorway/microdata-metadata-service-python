@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.1.14 \
+    POETRY_VERSION=1.4.1 \
     POETRY_HOME="/opt/poetry" \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
     POETRY_NO_INTERACTION=1 \
@@ -37,7 +37,7 @@ COPY poetry.lock pyproject.toml /app/
 
 # Install poetry and export dep endencies to requirements yaml
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.1.14
+RUN curl -sSL https://install.python-poetry.org | python3 - --version $POETRY_VERSION
 RUN poetry export > requirements.txt
 
 # Production image
