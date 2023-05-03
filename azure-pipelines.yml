@@ -29,8 +29,8 @@ stages:
     steps:
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.9'
-        displayName: 'Use Python 3.9'
+          versionSpec: '3.10'
+        displayName: 'Use Python 3.10'
 
       - script: |
           export PIP_NO_CACHE_DIR=off \
@@ -47,8 +47,8 @@ stages:
             build-essential \
             python3-distutils \
             python3-apt \
-            libpython3.9-dev
-          curl -sSL https://install.python-poetry.org | python3 - --version $POETRY_VERSION
+            libpython3.10-dev
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.4.1
           source $HOME/.poetry/env
           poetry install
         displayName: 'Install dependencies'
