@@ -1,8 +1,9 @@
 from itertools import chain
+from typing import List
 from metadata_service.adapter import datastore
 from metadata_service.domain.version import Version
 from metadata_service.exceptions.exceptions import (
-    DataNotFoundException, InvalidStorageFormatException,
+    InvalidStorageFormatException,
     InvalidDraftVersionException
 )
 
@@ -17,26 +18,21 @@ def find_all_datastore_versions():
     return datastore_versions
 
 
-def find_current_data_structure_status(datastructure_name: str):
+def find_current_data_structure_status(status_query_names: List[str]):
     datastore_versions = find_all_datastore_versions()
+    datastructure_statuses = {}
     for version in datastore_versions['versions']:
-        dataset = next(
-            (
-                ds for ds in version['dataStructureUpdates']
-                if datastructure_name == ds['name']
-            ),
-            None
-        )
-        if dataset:
-            return {
-                'name': datastructure_name,
-                'operation': dataset['operation'],
-                'releaseTime': version['releaseTime'],
-                'releaseStatus': dataset['releaseStatus']
-            }
-    raise DataNotFoundException(
-        f"No data structure named {datastructure_name} was found"
-    )
+        for data_structure in version['dataStructureUpdates']:
+            if (
+                data_structure['name'] in status_query_names and
+                data_structure['name'] not in datastructure_statuses
+            ):
+                datastructure_statuses[data_structure['name']] = {
+                    'operation': data_structure['operation'],
+                    'releaseTime': version['releaseTime'],
+                    'releaseStatus': data_structure['releaseStatus']
+                }
+    return datastructure_statuses
 
 
 def find_data_structures(
