@@ -6,10 +6,8 @@ from metadata_service.exceptions.exceptions import RequestValidationException
 
 
 def test_metadata_query_correct_version():
-    query = MetadataQuery(
-        version='1.0.0.0'
-    )
-    assert query.version == '1.0.0.0'
+    query = MetadataQuery(version="1.0.0.0")
+    assert query.version == "1.0.0.0"
 
 
 def test_metadata_query_no_version():
@@ -20,58 +18,40 @@ def test_metadata_query_no_version():
 
 def test_metadata_query_invalid_version():
     with pytest.raises(RequestValidationException) as e:
-        MetadataQuery(
-            version='1.0.0'
-        )
-    assert 'Version is in incorrect format' in e.value.message['message']
+        MetadataQuery(version="1.0.0")
+    assert "Version is in incorrect format" in e.value.message["message"]
 
 
 def test_metadata_query_invalid_version2():
     with pytest.raises(RequestValidationException) as e:
-        MetadataQuery(
-            version='1.0.0.0.0'
-        )
-    assert 'Version is in incorrect format' in e.value.message['message']
+        MetadataQuery(version="1.0.0.0.0")
+    assert "Version is in incorrect format" in e.value.message["message"]
 
 
 def test_metadata_query_invalid_version3():
     with pytest.raises(RequestValidationException) as e:
-        MetadataQuery(
-            version='1_0_0'
-        )
-    assert 'Version is in incorrect format' in e.value.message['message']
+        MetadataQuery(version="1_0_0")
+    assert "Version is in incorrect format" in e.value.message["message"]
 
 
 def test_metadata_query_draft_version():
-    query = MetadataQuery(
-        version='0.0.0.12345'
-    )
-    assert query.version == '0.0.0.12345'
+    query = MetadataQuery(version="0.0.0.12345")
+    assert query.version == "0.0.0.12345"
 
 
 def test_metadata_query_names_as_str():
-    query = MetadataQuery(
-        names='a,b',
-        version='1.0.0.0'
-    )
+    query = MetadataQuery(names="a,b", version="1.0.0.0")
     assert isinstance(query.names, list)
 
 
 def test_metadata_query_names_as_list():
-    query = MetadataQuery(
-        names=['a', 'b'],
-        version='1.0.0.0'
-    )
+    query = MetadataQuery(names=["a", "b"], version="1.0.0.0")
     assert isinstance(query.names, list)
 
 
 def test_metadata_query_invalid_names():
     with pytest.raises(RequestValidationException) as e:
-        MetadataQuery(
-            names={'a'},
-            version='1.0.0.0'
-        )
+        MetadataQuery(names={"a"}, version="1.0.0.0")
     assert (
-        'names field must be a list or a string'
-        in e.value.message['message']
+        "names field must be a list or a string" in e.value.message["message"]
     )
