@@ -1,5 +1,5 @@
 from itertools import chain
-from typing import List
+from typing import List, Union
 from metadata_service.adapter import datastore
 from metadata_service.domain.version import Version
 from metadata_service.exceptions.exceptions import (
@@ -18,7 +18,9 @@ def find_all_datastore_versions():
     return datastore_versions
 
 
-def find_current_data_structure_status(status_query_names: List[str]):
+def find_current_data_structure_status(
+        status_query_names: List[str]
+) -> dict[str, Union[dict, None]]:
     datastore_versions = find_all_datastore_versions()
     datastructure_statuses = {}
     for version in datastore_versions['versions']:
@@ -32,8 +34,11 @@ def find_current_data_structure_status(status_query_names: List[str]):
                     'releaseTime': version['releaseTime'],
                     'releaseStatus': data_structure['releaseStatus']
                 }
-    return datastructure_statuses
-
+    return {
+        name: datastructure_statuses.get(name, None)
+        for name in status_query_names
+    }
+    
 
 def find_data_structures(
     names: list[str],
