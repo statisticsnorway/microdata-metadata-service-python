@@ -40,4 +40,7 @@ class MetadataQuery(BaseModel, extra=Extra.forbid, validate_assignment=True):
 
 
 class NameParam(BaseModel, extra=Extra.forbid):
-    name: str
+    names: str
+
+    def get_names_as_list(self) -> List[str]:
+        return self.names.split(',')

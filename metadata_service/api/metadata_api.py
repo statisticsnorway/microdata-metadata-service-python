@@ -25,9 +25,11 @@ def get_data_store():
 @validate()
 def get_data_structure_current_status(query: NameParam):
     logger.info(
-        f'GET /metadata/data-structures/status with name = {query.name}'
+        f'GET /metadata/data-structures/status with name = {query.names}'
     )
-    response = jsonify(metadata.find_current_data_structure_status(query.name))
+    response = jsonify(
+        metadata.find_current_data_structure_status(query.get_names_as_list())
+    )
     response.headers.set('content-language', 'no')
     return response
 

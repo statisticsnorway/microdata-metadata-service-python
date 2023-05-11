@@ -121,41 +121,73 @@ def test_find_current_data_structure_status(mocker):
         return_value=mocked_draft_version
     )
     actual_draft = metadata.find_current_data_structure_status(
-        'TEST_PERSON_HOBBIES'
+        ['TEST_PERSON_HOBBIES']
     )
     actual_pending_release = metadata.find_current_data_structure_status(
-        'TEST_PERSON_SAVINGS'
+        ['TEST_PERSON_SAVINGS']
     )
     actual_released = metadata.find_current_data_structure_status(
-        'TEST_PERSON_PETS'
+        ['TEST_PERSON_PETS']
     )
     actual_removed = metadata.find_current_data_structure_status(
-        'TEST_PERSON_INCOME'
+        ['TEST_PERSON_INCOME']
     )
-    assert actual_draft == {
-        "name": "TEST_PERSON_HOBBIES",
-        "operation": "ADD",
-        "releaseTime": 1608000000,
-        "releaseStatus": "DRAFT"
+    actual_no_such_dataset = metadata.find_current_data_structure_status(
+        ['NO_SUCH_DATASET']
+    )
+    actual_all = metadata.find_current_data_structure_status(
+        [
+            'TEST_PERSON_INCOME',
+            'TEST_PERSON_PETS',
+            'TEST_PERSON_SAVINGS',
+            'TEST_PERSON_HOBBIES',
+            'NO_SUCH_DATASET'
+        ]
+    )
+    expected_draft = {
+        "TEST_PERSON_HOBBIES": {
+            "operation": "ADD",
+            "releaseTime": 1608000000,
+            "releaseStatus": "DRAFT"
+        }
     }
-    assert actual_pending_release == {
-        "name": "TEST_PERSON_SAVINGS",
-        "operation": "ADD",
-        "releaseTime": 1608000000,
-        "releaseStatus": "PENDING_RELEASE"
+    expected_no_such_dataset = {
+        "NO_SUCH_DATASET": None
     }
-    assert actual_released == {
-        "name": "TEST_PERSON_PETS",
-        "operation": "ADD",
-        "releaseTime": 1607332752,
-        "releaseStatus": "RELEASED"
+    expected_pending_release = {
+        "TEST_PERSON_SAVINGS": {
+            "operation": "ADD",
+            "releaseTime": 1608000000,
+            "releaseStatus": "PENDING_RELEASE"
+        }
     }
-    assert actual_removed == {
-        "name": "TEST_PERSON_INCOME",
-        "operation": "REMOVE",
-        "releaseTime": 1607332762,
-        "releaseStatus": "DELETED"
+    expected_released = {
+        "TEST_PERSON_PETS": {
+            "operation": "ADD",
+            "releaseTime": 1607332752,
+            "releaseStatus": "RELEASED"
+        }
     }
+    expected_removed = {
+        "TEST_PERSON_INCOME": {
+            "operation": "REMOVE",
+            "releaseTime": 1607332762,
+            "releaseStatus": "DELETED"
+        }
+    }
+    expected_all = {
+        **expected_draft,
+        **expected_pending_release,
+        **expected_released,
+        **expected_removed,
+        **expected_no_such_dataset
+    }
+    assert actual_draft == expected_draft
+    assert actual_pending_release == expected_pending_release
+    assert actual_released == expected_released
+    assert actual_removed == expected_removed
+    assert actual_no_such_dataset == expected_no_such_dataset
+    assert actual_all == expected_all
 
 
 def test_find_all_datastore_versions(mocker):
