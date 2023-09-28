@@ -15,8 +15,10 @@ variables:
   imageName: 'eu.gcr.io/prod-bip/ssb/microdata/metadata-service'
   repoName: 'prod-bip/ssb/microdata/metadata-service'
   fullSha: '$(Build.SourceVersion)'
-  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
-  latestTag: 'bipLatest'
+  #isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isPoc: $[eq(variables['Build.SourceBranch'], 'refs/heads/non-root-poc')]
+  #latestTag: 'bipLatest'
+  latestTag: 'nonPocLatest'
 
 stages:
 
@@ -61,7 +63,7 @@ stages:
 - stage: build
   displayName: Build Docker Image and push to GCR
   dependsOn: unitTests
-  condition: and(succeeded(), eq(variables.isMaster, true))
+  condition: and(succeeded(), eq(variables.isPoc, true))
   jobs:
     - job: buildAndPush
       displayName: Build and Push to GCR

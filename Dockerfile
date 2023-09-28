@@ -43,6 +43,10 @@ RUN poetry export > requirements.txt
 # Production image
 FROM python:3.9-slim-bullseye
 
+# Create user
+RUN groupadd --gid 180291 microdata \
+    && useradd --uid 180291 --gid microdata --shell /bin/bash --create-home microdata 
+
 WORKDIR /app
 COPY metadata_service metadata_service
 COPY --from=builder /app/pyproject.toml pyproject.toml
@@ -52,5 +56,8 @@ RUN pip install -r requirements.txt
 
 #the output is sent straight to terminal without being first buffered
 ENV PYTHONUNBUFFERED 1
+
+# Change to our non-root user
+USER microdata
 
 CMD ["gunicorn", "metadata_service.app:app", "--workers", "1"]
