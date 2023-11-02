@@ -75,6 +75,16 @@ def find_all_metadata(version: Version, skip_code_lists: bool = False):
     )
 
 
+def find_all_data_structures_ever():
+    all_datastore_versions = find_all_datastore_versions()
+    datastore_versions = [ver for ver in all_datastore_versions["versions"]]
+    data_structures = set()
+    for datastore_version in datastore_versions:
+        for ds_update in datastore_version["dataStructureUpdates"]:
+            data_structures.add(ds_update["name"])
+    return data_structures
+
+
 def find_languages():
     return [
         {"code": "no", "label": "Norsk"},

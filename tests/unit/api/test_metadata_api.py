@@ -166,6 +166,27 @@ def test_get_data_structures_with_messagepack(flask_app, mocker):
     assert msgpack.loads(response.data) == mocked_data_structures
 
 
+def test_get_all_data_structures_ever(flask_app, mocker):
+    mocked_data_structures = ["TEST_PERSON_INCOME", "TEST_PERSON_PETS"]
+    spy = mocker.patch.object(
+        metadata,
+        "find_all_data_structures_ever",
+        return_value=mocked_data_structures,
+    )
+    response: Response = flask_app.get(
+        url_for("metadata_api.get_all_data_structures_ever"),
+        headers={
+            "X-Request-ID": "test-123",
+            "Accept-Language": "no",
+            "Accept": "application/json",
+        },
+    )
+
+    spy.assert_called()
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.json == mocked_data_structures
+
+
 def test_get_all_metadata(flask_app, mocker):
     with open(DATA_STRUCTURES_FILE_PATH, encoding="utf-8") as f:
         mocked_data_structures = json.load(f)

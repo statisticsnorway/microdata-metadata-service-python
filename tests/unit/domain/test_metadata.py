@@ -208,6 +208,24 @@ def test_find_all_datastore_versions_when_draft_version_empty(mocker):
     assert actual["versions"][0]["version"] == "2.0.0.0"
 
 
+def test_find_all_data_structures_ever(mocker):
+    with open(DATASTORE_VERSIONS_FILE_PATH, encoding="utf-8") as f:
+        mocked_datastore_versions = json.load(f)
+    with open(DRAFT_VERSION_FILE_PATH, encoding="utf-8") as f:
+        mocked_draft_version = json.load(f)
+    mocker.patch.object(
+        datastore,
+        "get_datastore_versions",
+        return_value=mocked_datastore_versions,
+    )
+    mocker.patch.object(
+        datastore, "get_draft_version", return_value=mocked_draft_version
+    )
+
+    actual = metadata.find_all_data_structures_ever()
+    assert len(actual) == 4
+
+
 def test_get_metadata_all_skip_code_list_and_missing_values(mocker):
     with open(METADATA_ALL_FILE_PATH, encoding="utf-8") as f:
         mocked_metadata_all = json.load(f)

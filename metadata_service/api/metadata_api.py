@@ -24,7 +24,9 @@ def get_data_store():
 @metadata_api.route("/metadata/data-structures/status", methods=["GET"])
 @validate()
 def get_data_structure_current_status(query: NameParam):
-    logger.info(f"GET /metadata/data-structures/status with name = {query.names}")
+    logger.info(
+        f"GET /metadata/data-structures/status with name = {query.names}"
+    )
     response = jsonify(
         metadata.find_current_data_structure_status(query.get_names_as_list())
     )
@@ -50,13 +52,25 @@ def get_data_structures(query: MetadataQuery):
     return response
 
 
+@metadata_api.route("/metadata/all-data-structures", methods=["GET"])
+@validate()
+def get_all_data_structures_ever():
+    logger.info("GET /metadata/all-data-structures")
+
+    response = jsonify(metadata.find_all_data_structures_ever())
+    response.headers.set("content-language", "no")
+    return response
+
+
 @metadata_api.route("/metadata/all", methods=["GET"])
 @validate()
 def get_all_metadata(query: MetadataQuery):
     logger.info(f"GET /metadata/all with version: {query.version}")
 
     response = jsonify(
-        metadata.find_all_metadata(Version(query.version), query.skip_code_lists)
+        metadata.find_all_metadata(
+            Version(query.version), query.skip_code_lists
+        )
     )
     response.headers.set("content-language", "no")
     return response
