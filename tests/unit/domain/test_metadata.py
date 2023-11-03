@@ -1,5 +1,6 @@
 import json
 from itertools import chain
+from typing import List
 
 import pytest
 
@@ -224,6 +225,7 @@ def test_find_all_data_structures_ever(mocker):
 
     actual = metadata.find_all_data_structures_ever()
     assert len(actual) == 4
+    assert isinstance(actual, List)
 
 
 def test_get_metadata_all_skip_code_list_and_missing_values(mocker):

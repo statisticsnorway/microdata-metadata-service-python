@@ -82,7 +82,7 @@ def find_all_data_structures_ever():
     for datastore_version in datastore_versions:
         for ds_update in datastore_version["dataStructureUpdates"]:
             data_structures.add(ds_update["name"])
-    return data_structures
+    return list(data_structures)
 
 
 def find_languages():
