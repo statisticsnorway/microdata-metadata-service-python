@@ -11,7 +11,7 @@ logger = logging.getLogger()
 metadata_api = Blueprint("metadata_api", __name__)
 
 
-@metadata_api.route("/metadata/data-store", methods=["GET"])
+@metadata_api.get("/metadata/data-store")
 @validate()
 def get_data_store():
     logger.info("GET /metadata/data-store")
@@ -21,7 +21,7 @@ def get_data_store():
     return response
 
 
-@metadata_api.route("/metadata/data-structures/status", methods=["GET"])
+@metadata_api.get("/metadata/data-structures/status")
 @validate()
 def get_data_structure_current_status(query: NameParam):
     logger.info(
@@ -34,7 +34,7 @@ def get_data_structure_current_status(query: NameParam):
     return response
 
 
-@metadata_api.route("/metadata/data-structures", methods=["GET"])
+@metadata_api.get("/metadata/data-structures")
 @validate()
 def get_data_structures(query: MetadataQuery):
     query.include_attributes = True
@@ -52,7 +52,7 @@ def get_data_structures(query: MetadataQuery):
     return response
 
 
-@metadata_api.route("/metadata/all-data-structures", methods=["GET"])
+@metadata_api.get("/metadata/all-data-structures")
 @validate()
 def get_all_data_structures_ever():
     logger.info("GET /metadata/all-data-structures")
@@ -62,7 +62,7 @@ def get_all_data_structures_ever():
     return response
 
 
-@metadata_api.route("/metadata/all", methods=["GET"])
+@metadata_api.get("/metadata/all")
 @validate()
 def get_all_metadata(query: MetadataQuery):
     logger.info(f"GET /metadata/all with version: {query.version}")
@@ -76,7 +76,7 @@ def get_all_metadata(query: MetadataQuery):
     return response
 
 
-@metadata_api.route("/languages", methods=["GET"])
+@metadata_api.get("/languages")
 @validate()
 def get_languages():
     logger.info("GET /languages")
