@@ -4,11 +4,11 @@ from flask import Blueprint
 observability = Blueprint("observability", __name__)
 
 
-@observability.route("/health/alive", methods=["GET"])
+@observability.get("/health/alive")
 def alive():
     return "I'm alive!"
 
 
-@observability.route("/health/ready", methods=["GET"])
+@observability.get("/health/ready")
 def ready():
     return "I'm ready!"
