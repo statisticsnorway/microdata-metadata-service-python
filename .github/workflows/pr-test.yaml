@@ -26,4 +26,4 @@ jobs:
         poetry install
 
     - name: Run tests
-      run: poetry run pytest --cov=pseudonym_service
+      run: poetry run pytest --cov=metadata_service
