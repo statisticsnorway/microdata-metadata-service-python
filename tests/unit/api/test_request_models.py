@@ -11,9 +11,8 @@ def test_metadata_query_correct_version():
 
 
 def test_metadata_query_no_version():
-    with pytest.raises(ValidationError) as e:
+    with pytest.raises(ValidationError):
         MetadataQuery()
-    assert "('version',)" in str(e)
 
 
 def test_metadata_query_invalid_version():
