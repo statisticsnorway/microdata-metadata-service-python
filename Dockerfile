@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.4.1 \
+    POETRY_VERSION=1.7.1 \
     POETRY_HOME="/opt/poetry" \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
     POETRY_NO_INTERACTION=1 \
@@ -19,9 +19,9 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 # Install python 3.9
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    python3.9 \
+    python3.12 \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
-    && ln -s /usr/bin/python3.9 /usr/bin/python
+    && ln -s /usr/bin/python3.12 /usr/bin/python
 
 # Install tools
 RUN apt-get update \
@@ -41,7 +41,7 @@ RUN curl -sSL https://install.python-poetry.org | python3 - --version $POETRY_VE
 RUN poetry export > requirements.txt
 
 # Production image
-FROM python:3.9-slim-bullseye
+FROM python:3.12-slim-bullseye
 
 # Create user
 RUN groupadd --gid 180291 microdata \
