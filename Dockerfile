@@ -60,4 +60,4 @@ ENV PYTHONUNBUFFERED 1
 # Change user
 USER microdata
 
-CMD ["gunicorn", "metadata_service.app:app", "--workers", "1"]
+CMD ["gunicorn", "metadata_service.app:app", "--workers", "1", "--limit-request-line", "8190"]
