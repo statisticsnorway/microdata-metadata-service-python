@@ -28,11 +28,11 @@ class MetadataQuery(BaseModel, extra="forbid", validate_assignment=True):
                 "names field must be a list or a string"
             )
 
-    @field_validator("version", mode= "before")
+    @field_validator("version", mode="before")
     @classmethod
     def validate_version(cls, version: str):
         if not SEMVER_4_PARTS_REG_EXP.match(version):
-            raise RequestValidationException (
+            raise RequestValidationException(
                 f"Version is in incorrect format: {version}. "
                 "Should consist of 4 parts, e.g. 1.0.0.0"
             )
