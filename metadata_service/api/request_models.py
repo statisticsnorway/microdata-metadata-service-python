@@ -1,7 +1,7 @@
 import re
 from typing import List
 
-from pydantic import BaseModel, Extra, validator
+from pydantic import BaseModel, field_validator
 
 from metadata_service.exceptions.exceptions import RequestValidationException
 
@@ -10,13 +10,13 @@ SEMVER_4_PARTS_REG_EXP = re.compile(
 )
 
 
-class MetadataQuery(BaseModel, extra=Extra.forbid, validate_assignment=True):
+class MetadataQuery(BaseModel, extra="forbid", validate_assignment=True):
     names: List[str] = []
     version: str
     include_attributes: bool = False
     skip_code_lists: bool = False
 
-    @validator("names", pre=True)
+    @field_validator("names", mode="before")
     @classmethod
     def split_str(cls, names):
         if isinstance(names, List):
@@ -28,7 +28,7 @@ class MetadataQuery(BaseModel, extra=Extra.forbid, validate_assignment=True):
                 "names field must be a list or a string"
             )
 
-    @validator("version", pre=True)
+    @field_validator("version", mode="before")
     @classmethod
     def validate_version(cls, version: str):
         if not SEMVER_4_PARTS_REG_EXP.match(version):
@@ -39,7 +39,7 @@ class MetadataQuery(BaseModel, extra=Extra.forbid, validate_assignment=True):
         return version
 
 
-class NameParam(BaseModel, extra=Extra.forbid):
+class NameParam(BaseModel, extra="forbid"):
     names: str
 
     def get_names_as_list(self) -> List[str]:
