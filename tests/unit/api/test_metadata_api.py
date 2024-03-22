@@ -41,6 +41,24 @@ MOCKED_DATASTRUCTURE = {
     "releaseTime": 123123,
 }
 
+MOCKED_DATASTRUCTURES = [
+    {
+        "INNTEKT_TJENPEN": {
+            "description": "dummy",
+            "operation": "ADD",
+            "releaseTime": 123123,
+        }
+    },
+    {
+        "INNTEKT_BANKINNSK": {
+            "description": "dummy",
+            "operation": "ADD",
+            "releaseTime": 123123,
+        }
+    },
+]
+
+
 MOCKED_LANGUAGES = [
     {"code": "no", "label": "Norsk"},
     {"code": "en", "label": "English"},
@@ -95,22 +113,27 @@ def test_get_current_data_structure_status_as_post(flask_app, mocker):
     spy = mocker.patch.object(
         metadata,
         "find_current_data_structure_status",
-        return_value=MOCKED_DATASTRUCTURE,
+        return_value=MOCKED_DATASTRUCTURES,
     )
     response: Response = flask_app.post(
-        url_for(
-            "metadata_api.get_data_structure_current_status_as_post"),
-        json={"names": "INNTEKT_TJENPEN"},
+        url_for("metadata_api.get_data_structure_current_status_as_post"),
+        json={
+            "names": f"{next(iter(MOCKED_DATASTRUCTURES[0]))},{next(iter(MOCKED_DATASTRUCTURES[1]))}"
+        },
         headers={
             "X-Request-ID": "test-123",
             "Accept-Language": "no",
             "Accept": "application/json",
-            "Content-Type": "application/json"
         },
     )
-    spy.assert_called_with([MOCKED_DATASTRUCTURE["name"]])
+    spy.assert_called_with(
+        [
+            f"{next(iter(MOCKED_DATASTRUCTURES[0]))}",
+            f"{next(iter(MOCKED_DATASTRUCTURES[1]))}",
+        ]
+    )
     assert response.headers["Content-Type"] == "application/json"
-    assert response.json == MOCKED_DATASTRUCTURE
+    assert response.json == MOCKED_DATASTRUCTURES
 
 
 def test_get_multiple_data_structure_status(flask_app, mocker):
