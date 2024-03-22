@@ -91,6 +91,28 @@ def test_get_current_data_structure_status(flask_app, mocker):
     assert response.json == MOCKED_DATASTRUCTURE
 
 
+def test_get_current_data_structure_status_as_post(flask_app, mocker):
+    spy = mocker.patch.object(
+        metadata,
+        "find_current_data_structure_status",
+        return_value=MOCKED_DATASTRUCTURE,
+    )
+    response: Response = flask_app.post(
+        url_for(
+            "metadata_api.get_data_structure_current_status_as_post"),
+        json={"names": "INNTEKT_TJENPEN"},
+        headers={
+            "X-Request-ID": "test-123",
+            "Accept-Language": "no",
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+    )
+    spy.assert_called_with([MOCKED_DATASTRUCTURE["name"]])
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.json == MOCKED_DATASTRUCTURE
+
+
 def test_get_multiple_data_structure_status(flask_app, mocker):
     spy = mocker.patch.object(
         metadata,
