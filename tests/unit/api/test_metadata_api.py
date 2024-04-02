@@ -41,22 +41,18 @@ MOCKED_DATASTRUCTURE = {
     "releaseTime": 123123,
 }
 
-MOCKED_DATASTRUCTURES = [
-    {
-        "INNTEKT_TJENPEN": {
-            "description": "dummy",
-            "operation": "ADD",
-            "releaseTime": 123123,
-        }
+MOCKED_DATASTRUCTURES = {
+    "INNTEKT_TJENPEN": {
+        "description": "dummy",
+        "operation": "ADD",
+        "releaseTime": 123123,
     },
-    {
-        "INNTEKT_BANKINNSK": {
-            "description": "dummy",
-            "operation": "ADD",
-            "releaseTime": 123123,
-        }
+    "INNTEKT_BANKINNSK": {
+        "description": "dummy",
+        "operation": "ADD",
+        "releaseTime": 123123,
     },
-]
+}
 
 
 MOCKED_LANGUAGES = [
@@ -117,21 +113,14 @@ def test_get_current_data_structure_status_as_post(flask_app, mocker):
     )
     response: Response = flask_app.post(
         url_for("metadata_api.get_data_structure_current_status_as_post"),
-        json={
-            "names": f"{next(iter(MOCKED_DATASTRUCTURES[0]))},{next(iter(MOCKED_DATASTRUCTURES[1]))}"
-        },
+        json={"names": ",".join(list(MOCKED_DATASTRUCTURES.keys()))},
         headers={
             "X-Request-ID": "test-123",
             "Accept-Language": "no",
             "Accept": "application/json",
         },
     )
-    spy.assert_called_with(
-        [
-            f"{next(iter(MOCKED_DATASTRUCTURES[0]))}",
-            f"{next(iter(MOCKED_DATASTRUCTURES[1]))}",
-        ]
-    )
+    spy.assert_called_with(list(MOCKED_DATASTRUCTURES.keys()))
     assert response.headers["Content-Type"] == "application/json"
     assert response.json == MOCKED_DATASTRUCTURES
 
