@@ -34,6 +34,19 @@ def get_data_structure_current_status(query: NameParam):
     return response
 
 
+@metadata_api.post("/metadata/data-structures/status")
+@validate()
+def get_data_structure_current_status_as_post(body: NameParam):
+    logger.info(
+        f"POST /metadata/data-structures/status with name = {body.names}"
+    )
+    response = jsonify(
+        metadata.find_current_data_structure_status(body.get_names_as_list())
+    )
+    response.headers.set("content-language", "no")
+    return response
+
+
 @metadata_api.get("/metadata/data-structures")
 @validate()
 def get_data_structures(query: MetadataQuery):
