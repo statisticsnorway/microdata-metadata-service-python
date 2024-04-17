@@ -1,0 +1,33 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: metadata-service
+  title: Metadata service
+  description: |
+    Service for metadata in the microdata platform
+  tags:
+    - python
+    - flask
+  annotations:
+    github.com/project-slug: statisticsnorway/microdata-metadata-service
+spec:
+  type: service
+  system: microdata
+  owner: microdata-developers
+  lifecycle: production
+  providesApis:
+    - metadata-service-api
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: metadata-service-api
+  description: Metadata service api
+spec:
+  type: openapi
+  system: microdata
+  owner: microdata-developers
+  lifecycle: production
+  definition: 
+    $text: .
