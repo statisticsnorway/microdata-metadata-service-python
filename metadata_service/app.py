@@ -1,7 +1,6 @@
 import logging
 import sys
 
-import json_logging
 import msgpack
 from flask import Flask, Response, request, jsonify, make_response
 from werkzeug.exceptions import NotFound
