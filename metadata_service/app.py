@@ -1,6 +1,5 @@
 import logging
 import sys
-import uuid
 
 import json_logging
 import msgpack
@@ -9,27 +8,13 @@ from werkzeug.exceptions import NotFound
 
 from metadata_service.api.metadata_api import metadata_api
 from metadata_service.api.observability import observability
-from metadata_service.config.logging import (
-    CustomJSONLog,
-    CustomJSONRequestLogFormatter,
-)
+from metadata_service.config.logging import setup_logging
 from metadata_service.exceptions.exceptions import (
     DataNotFoundException,
     InvalidStorageFormatException,
     RequestValidationException,
     InvalidDraftVersionException,
 )
-
-
-def init_json_logging():
-    json_logging.CREATE_CORRELATION_ID_IF_NOT_EXISTS = True
-    json_logging.CORRELATION_ID_GENERATOR = lambda: "metadata-service-" + str(
-        uuid.uuid1()
-    )
-    json_logging.init_flask(enable_json=True, custom_formatter=CustomJSONLog)
-    json_logging.init_request_instrument(
-        app, custom_formatter=CustomJSONRequestLogFormatter
-    )
 
 
 logger = logging.getLogger()
@@ -40,14 +25,11 @@ app = Flask(__name__)
 app.register_blueprint(observability)
 app.register_blueprint(metadata_api)
 
-init_json_logging()
+setup_logging(app)
 
 
 @app.after_request
 def after_request(response: Response):
-    response.headers.set(
-        "X-Request-ID", json_logging.get_correlation_id(request)
-    )
     if (
         "Accept" in request.headers
         and request.headers["Accept"] == "application/x-msgpack"
