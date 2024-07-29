@@ -3,7 +3,8 @@ import sys
 import uuid
 import json
 import logging
-import datetime as dt
+import datetime
+from time import perf_counter_ns
 
 import tomlkit
 from flask import request, g
@@ -42,9 +43,9 @@ class MicrodataJSONFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         return json.dumps(
             {
-                "@timestamp": dt.datetime.fromtimestamp(
+                "@timestamp": datetime.datetime.fromtimestamp(
                     record.created,
-                    tz=dt.timezone.utc,
+                    tz=datetime.timezone.utc,
                 ).isoformat(),
                 "command": self.command,
                 "error.stack": record.__dict__.get("exc_info"),
@@ -82,7 +83,7 @@ def setup_logging(app, log_level: int = logging.INFO) -> None:
 
     @app.before_request
     def before_request():
-        g.start_time = dt.datetime.now()
+        g.start_time = perf_counter_ns()
         correlation_id = request.headers.get("X-Request-ID", None)
         if correlation_id is None:
             g.correlation_id = "metadata-service-" + str(uuid.uuid1())
@@ -95,7 +96,7 @@ def setup_logging(app, log_level: int = logging.INFO) -> None:
     @app.after_request
     def after_request(response):
         g.response_time_ms = int(
-            (dt.datetime.now() - g.start_time).total_seconds() * 1000
+            (perf_counter_ns() - g.start_time) / 1_000_000
         )
         g.response_status = response.status_code
         response.headers["X-Request-ID"] = g.correlation_id
