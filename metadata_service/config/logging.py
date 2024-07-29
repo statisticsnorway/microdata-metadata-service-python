@@ -1,3 +1,4 @@
+import re
 import sys
 import uuid
 import json
@@ -19,12 +20,16 @@ def _get_project_meta():
 
 class RequestInfoFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
-        record.correlation_id = request.headers.get("X-Request-ID", "unknown")
+        # Make sure string only contains alphanumeric characters,
+        # underscores and/or dashes
+        record.correlation_id = re.sub(
+            r"[^\w\-]", "", request.headers.get("X-Request-ID", "")
+        )
         record.method = request.method
         record.url = request.url
         record.remote_host = request.remote_addr
-        record.response_status = getattr(g, "response_status", "unknown")
-        record.response_time_ms = getattr(g, "response_time_ms", "unknown")
+        record.response_status = getattr(g, "response_status")
+        record.response_time_ms = getattr(g, "response_time_ms")
         return True
 
 
