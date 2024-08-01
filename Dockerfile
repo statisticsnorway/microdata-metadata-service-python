@@ -1,5 +1,5 @@
 # Export Poetry Packages
-FROM python:3.12-bookworm as builder
+FROM python:3.12-bookworm AS builder
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -27,7 +27,7 @@ COPY poetry.lock pyproject.toml /app/
 
 # Install poetry and export dep endencies to requirements yaml
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN curl -sSL https://install.python-poetry.org | python3 - --version $POETRY_VERSION
+RUN curl --proto '=https' --tlsv1.2 -sSL https://install.python-poetry.org | python3 - --version "$POETRY_VERSION"
 RUN poetry export > requirements.txt
 
 # Production image
