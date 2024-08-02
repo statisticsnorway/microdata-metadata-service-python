@@ -161,7 +161,7 @@ components:
           type: string
         operation:
           type: string
-        release_status:
+        releaseStatus:
           type: string
     DatastoreVersion:
       type: object
@@ -170,13 +170,13 @@ components:
           type: string
         description:
           type: string
-        release_time:
+        releaseTime:
           type: integer
-        language_code:
+        languageCode:
           type: string
-        update_type:
+        updateType:
           type: string
-        data_structure_updates:
+        dataStructureUpdates:
           type: array
           items:
             $ref: '#/components/schemas/DataStructureUpdate'
@@ -248,16 +248,16 @@ components:
       properties:
         description:
           type: string
-        unit_of_measure:
+        unitOfMeasure:
           type: string
     EnumeratedValueDomain:
       type: object
       properties:
-        code_list:
+        codeList:
           type: array
           items:
             $ref: '#/components/schemas/CodeListItem'
-        missing_values:
+        missingValues:
           type: array
           items:
             type: string
@@ -271,31 +271,66 @@ components:
       properties:
         description:
           type: string
-        valid_period:
+        validPeriod:
           $ref: '#/components/schemas/TimePeriod'
-        value_domain:
+        valueDomain:
           $ref: '#/components/schemas/ValueDomain'
-    Metadata:
+    Variable:
       type: object
       properties:
         name:
           type: string
         label:
           type: string
-        not_pseudonym:
+        notPseudonym:
           type: boolean
-        data_type:
+        dataType:
           type: string
         format:
           type: string
-        variable_role:
+        variableRole:
           type: string
-        key_type:
+        keyType:
           $ref: '#/components/schemas/KeyType'
-        represented_variables:
+        representedVariables:
           type: array
           items:
             $ref: '#/components/schemas/RepresentedVariable'
+    Metadata:
+      type: object
+      properties:
+        name: 
+          type: string
+        temporality: 
+          type: string
+        languageCode: 
+          type: string
+        sensitivityLevel: 
+          type: string
+        populationDescription:
+          type: string
+        subjectFields:
+          type: array
+          items:
+            type: string
+        temporal_coverage:
+          $ref: '#/components/schemas/TimePeriod'
+        measureVariable:
+          type: array
+          items:
+            $ref: '#/components/schemas/Variable'
+        identifier_variables:
+          type: array
+          items:
+            $ref: '#/components/schemas/Variable'
+        attributeVariables:
+          type: array
+          items:
+            $ref: '#/components/schemas/Variable'
+        temporalStatusDates:
+          type: array
+          items:
+            type: integer
     DataStoreInfo:
       type: object
       properties:
@@ -305,7 +340,7 @@ components:
           type: string
         description:
           type: string
-        language_code:
+        languageCode:
           type: string
     LanguageInfo:
       type: object
@@ -317,9 +352,9 @@ components:
     MetadataAll:
       type: object
       properties:
-        data_store:
+        dataStore:
           $ref: '#/components/schemas/DataStoreInfo'
-        data_structures:
+        dataStructures:
           type: array
           items:
             $ref: '#/components/schemas/Metadata'
@@ -327,4 +362,3 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LanguageInfo'
-
