@@ -19,21 +19,6 @@ def _get_project_meta():
     return tomlkit.parse(file_contents)["tool"]["poetry"]
 
 
-class RequestInfoFilter(logging.Filter):
-    def filter(self, record: logging.LogRecord) -> bool:
-        # Make sure string only contains alphanumeric characters,
-        # underscores and/or dashes
-        record.correlation_id = re.sub(
-            r"[^\w\-]", "", request.headers.get("X-Request-ID", "")
-        )
-        record.method = request.method
-        record.url = request.url
-        record.remote_host = request.remote_addr
-        record.response_status = getattr(g, "response_status")
-        record.response_time_ms = getattr(g, "response_time_ms")
-        return True
-
-
 class MicrodataJSONFormatter(logging.Formatter):
     def __init__(self):
         self.pkg_meta = _get_project_meta()
@@ -54,16 +39,18 @@ class MicrodataJSONFormatter(logging.Formatter):
                 "level": record.levelno,
                 "levelName": record.levelname,
                 "loggerName": record.name,
-                "method": record.__dict__.get("method"),
-                "responseTime": record.__dict__.get("response_time_ms"),
+                "method": request.method,
+                "responseTime": getattr(g, "response_time_ms"),
                 "schemaVersion": "v3",
                 "serviceName": "metadata-service",
                 "serviceVersion": str(self.pkg_meta["version"]),
-                "source_host": record.__dict__.get("remote_host"),
-                "statusCode": record.__dict__.get("response_status"),
+                "source_host": request.remote_addr,
+                "statusCode": getattr(g, "response_status"),
                 "thread": record.threadName,
-                "url": record.__dict__.get("request"),
-                "xRequestId": record.__dict__.get("correlation_id"),
+                "url": request.url,
+                "xRequestId": re.sub(
+                    r"[^\w\-]", "", request.headers.get("X-Request-ID", "")
+                ),
             }
         )
 
@@ -77,8 +64,6 @@ def setup_logging(app, log_level: int = logging.INFO) -> None:
 
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(formatter)
-    request_info_filter = RequestInfoFilter()
-    logger.addFilter(request_info_filter)
     logger.addHandler(stream_handler)
 
     @app.before_request
