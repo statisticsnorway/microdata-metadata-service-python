@@ -1,5 +1,4 @@
 import logging
-import sys
 
 import msgpack
 from flask import Flask, Response, request, jsonify, make_response
@@ -17,8 +16,6 @@ from metadata_service.exceptions.exceptions import (
 
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-logger.addHandler(logging.StreamHandler(sys.stdout))
 
 app = Flask(__name__)
 app.register_blueprint(observability)

@@ -47,4 +47,4 @@ RUN pip install -r requirements.txt
 # Change user
 USER microdata
 
-CMD ["gunicorn", "metadata_service.app:app", "--workers", "1", "--limit-request-line", "8190"]
+CMD ["gunicorn", "--logger-class", "metadata_service.config.gunicorn.CustomLogger", "metadata_service.app:app", "--workers", "1", "--limit-request-line", "8190"]
