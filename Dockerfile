@@ -8,8 +8,8 @@ ENV PYTHONUNBUFFERED=1 \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
     POETRY_NO_INTERACTION=1
 
-# Prepend poetry and venv to path
-ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+# Prepend poetry to path
+ENV PATH="$POETRY_HOME/bin:$PATH"
 
 # Install tools
 RUN apt-get update \
@@ -32,6 +32,9 @@ RUN poetry export > requirements.txt
 
 # Production image
 FROM python:3.12-slim-bullseye
+ARG COMMIT_ID
+ENV COMMIT_ID=$COMMIT_ID
+RUN echo "Commit ID: $COMMIT_ID"
 
 # Create user
 RUN groupadd --gid 180291 microdata \
