@@ -56,7 +56,7 @@ def handle_generic_exception(exc):
 
 @app.errorhandler(NotFound)
 def handle_url_invalid(exc):
-    logger.exception(exc)
+    logger.warning(exc, exc_info=True)
     return (
         jsonify(
             {
@@ -72,19 +72,19 @@ def handle_url_invalid(exc):
 
 @app.errorhandler(DataNotFoundException)
 def handle_data_not_found(exc):
-    logger.exception(exc)
+    logger.warning(exc, exc_info=True)
     return jsonify(exc.to_dict()), 404
 
 
 @app.errorhandler(InvalidDraftVersionException)
 def handle_invalid_draft(exc):
-    logger.exception(exc)
+    logger.warning(exc, exc_info=True)
     return str(exc), 404
 
 
 @app.errorhandler(RequestValidationException)
 def handle_invalid_request(exc):
-    logger.exception(exc)
+    logger.warning(exc, exc_info=True)
     return jsonify(exc.to_dict()), 400
 
 
