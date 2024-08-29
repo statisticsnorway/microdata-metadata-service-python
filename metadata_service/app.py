@@ -2,7 +2,7 @@ import logging
 
 import msgpack
 from flask import Flask, Response, request, jsonify, make_response
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadHost
 
 from metadata_service.api.metadata_api import metadata_api
 from metadata_service.api.observability import observability
@@ -56,6 +56,21 @@ def handle_generic_exception(exc):
 
 @app.errorhandler(NotFound)
 def handle_url_invalid(exc):
+    logger.warning(exc, exc_info=True)
+    return (
+        jsonify(
+            {
+                "code": 103,
+                "message": f"Error: {str(exc)}",
+                "service": "metadata-service",
+                "type": "PATH_NOT_FOUND",
+            }
+        ),
+        400,
+    )
+
+@app.errorhandler(BadHost)
+def handle_bad_host(exc):
     logger.warning(exc, exc_info=True)
     return (
         jsonify(
