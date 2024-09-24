@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test2:
+  hello:
     runs-on: [self-hosted]
     steps:
       - run: echo Hello world!

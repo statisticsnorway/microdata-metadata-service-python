@@ -1,4 +1,4 @@
-name: nytestrun2
+name: nytestrun3
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  hello2:
+  hell3:
     runs-on: [self-hosted]
     steps:
       - run: echo Hello world!
