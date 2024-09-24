@@ -1,0 +1,13 @@
+name: nytestrun
+
+on:
+  push:
+    branches:
+      - on-prem-runner-test
+  workflow_dispatch:
+
+jobs:
+  test2:
+    runs-on: [self-hosted]
+    steps:
+      - run: echo Hello world!
