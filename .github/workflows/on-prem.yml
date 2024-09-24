@@ -11,24 +11,30 @@ env:
   IMAGE: metadata-service
 
 jobs:
-  # test:
-  #   name: Test
-  #   runs-on: self-hosted
+  test:
+    name: Test
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-  #   - name: Install dependencies
-  #     run: |
-  #       curl -sSL https://install.python-poetry.org | python -
-  #       poetry install
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
 
-  #   - name: Run tests
-  #     run: poetry run pytest --cov=metadata_service
+    - name: Install dependencies
+      run: |
+        curl -sSL https://install.python-poetry.org | python -
+        poetry install
+
+    - name: Run tests
+      run: poetry run pytest --cov=metadata_service
 
   build:
     runs-on: self-hosted
+    needs: test
     permissions:
       contents: read
       id-token: write
